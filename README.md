@@ -19,6 +19,8 @@ Dino-Extinction-v1.0.0
 │ ├── static
 │ └── wsgi.py
 ├── tests
+├── CHANGELOG.md
+├── COMMANDS.md
 ├── Dockerfile
 ├── README.md
 └── requirements.txt
@@ -29,6 +31,8 @@ Dino-Extinction-v1.0.0
 
 ## ☕ Usage
 🚧 🚧 🚧
+
+To see all endpoint that this server has, pleace checkout our [commands reference](COMMANDS.md)
 
 ## 🐞 Testing
 🚧 🚧 🚧

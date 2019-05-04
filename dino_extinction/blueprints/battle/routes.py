@@ -1,9 +1,9 @@
 import json
 
 from flask import Response
-from dino_extinction.healthcheck import bp
+from . import bp
 
-@bp.route('/')
+@bp.route('/new', methods=['POST'])
 def index():
     response = {
         'status': 'pass'

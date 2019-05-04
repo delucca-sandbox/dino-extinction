@@ -12,12 +12,12 @@ The service is organized in the following structure:
 Dino-Extinction-v1.0.0
 │
 ├── dino-extinction
-│ ├── handlers
-│ ├── infrastructure
-│ ├── models
-│ ├── routes
-│ ├── static
-│ └── wsgi.py
+│ ├── blueprints
+│ ├── └── <blueprint>
+| ├── infrastructure
+| ├── static
+│ └── __init__.py
+├── features
 ├── tests
 ├── CHANGELOG.md
 ├── COMMANDS.md

@@ -1,2 +1,11 @@
-test:
-  url: 'http://localhost'
+SHARED: &shared
+  DEBUG: False
+
+DEVELOPMENT: &development
+  <<: *shared
+  DEBUG: True
+  REDIS_URL: 'redis://localhost:6379/0'
+
+TESTING:
+  <<: *shared
+  REDIS_URL: 'redis://morty'

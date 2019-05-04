@@ -1,5 +1,9 @@
-from redis import Redis
+from flask_redis import FlaskRedis
 
-def instance(host, port):
-    print(Redis)
-    return Redis(host=host, port=port)
+instance = FlaskRedis()
+
+
+def bind(app):
+    instance.init_app(app)
+
+    return True

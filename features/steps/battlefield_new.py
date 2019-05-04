@@ -20,3 +20,9 @@ def step_impl(context):
     assert context.failed is False
     assert context.response.status_code == 200
     assert context.response.data.id
+
+
+@then('the battlefield was created')
+def step_impl(context):
+    print(redis.store)
+    assert True == False

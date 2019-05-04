@@ -1,4 +1,7 @@
+import json
+
 from behave import *
+from dino_extinction.infrastructure import redis
 
 
 @given('a valid request')
@@ -19,10 +22,13 @@ def step_impl(context):
 def step_impl(context):
     assert context.failed is False
     assert context.response.status_code == 200
-    assert context.response.data.id
+
+    response = json.loads(context.response.data.decode('utf-8'))
+    assert response['id']
+
+    context.battle_id = response['id']
 
 
 @then('the battlefield was created')
 def step_impl(context):
-    print(redis.store)
-    assert True == False
+    assert redis.instance.get(context.battle_id)

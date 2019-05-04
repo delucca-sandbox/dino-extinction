@@ -1,16 +1,13 @@
 import json
 
 from flask import Response
-from dino_extinction.infrastructure import redis
 from . import bp
+from . import handlers
 
 
 @bp.route('/new', methods=['POST'])
 def index():
-    print(redis.instance)
-    response = {
-        'status': 'pass'
-    }
-    healthcheck = json.dumps(response)
+    data = handlers.new_battlefield()
+    response = json.dumps(data)
 
-    return Response(healthcheck, mimetype='application/health+json')
+    return Response(response, mimetype='application/json')

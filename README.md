@@ -3,7 +3,7 @@
 
 The year is 2242. The mankind kingdom expanded from Earth to our entire solar system. Our society is flourishing and nothing can stop our species from conquering new solar systems. During our expansion, we met with an ancient enemy in our home land: Dinosaurs. We thought that this hostile predator was extinct 144 million years ago, but it appears that somehow they survived.
 
-You're the captain of a strike force in our planet and your goal is simple: **use your robots to destroy as most dinosaurs you can.**
+You're the captain of a strike force in our planet and your goal is simple: **use your robots to destroy as most dinosaurs as you can.**
 
 ## 🧐 What's inside
 

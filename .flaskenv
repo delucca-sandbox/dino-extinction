@@ -1,0 +1,2 @@
+FLASK_APP=dino_extinction
+FLASK_ENV=development

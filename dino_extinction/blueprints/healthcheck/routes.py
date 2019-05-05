@@ -6,9 +6,9 @@ from . import bp
 
 @bp.route('/', methods=['GET'])
 def index():
-    response = {
-        'status': 'pass'
-    }
+    response = dict()
+    response['status'] = 'pass'
     healthcheck = json.dumps(response)
+    mimetype = 'application/health+json'
 
-    return Response(healthcheck, mimetype='application/health+json')
+    return Response(healthcheck, mimetype=mimetype)

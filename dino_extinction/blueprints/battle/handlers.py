@@ -1,15 +1,13 @@
 import json
 
 from random import randint
-from dino_extinction.infrastructure import redis
+from . import models
 
 def new_battlefield():
-    battle_id = randint(999, 9999)
-    initial_state = json.dumps({})
+    battle = dict()
+    battle['id'] = randint(999, 9999)
 
-    redis.instance.set(battle_id, initial_state)
+    model = models.BattleSchema()
+    created_battle = model.dumps(battle)
 
-    data = dict()
-    data['id'] = battle_id
-
-    return data
+    return created_battle.errors, battle

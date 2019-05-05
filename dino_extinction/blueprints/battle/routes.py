@@ -7,7 +7,11 @@ from . import handlers
 
 @bp.route('/new', methods=['POST'])
 def index():
-    data = handlers.new_battlefield()
-    response = json.dumps(data)
+    errors, battle = handlers.new_battlefield()
+    parsed = json.dumps(False if errors else battle)
+    status = 500 if errors else 200
+    mimetype = 'application/json'
 
-    return Response(response, mimetype='application/json')
+    return Response(parsed,
+                    status=status,
+                    mimetype=mimetype)

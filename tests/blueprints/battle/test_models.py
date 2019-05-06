@@ -99,8 +99,6 @@ def test_create_new_battle(mocked_redis):
     digits = [str(fake.random_digit()) for _ in range(4)]
     id = int(''.join(digits))
     board_size = fake.random_digit()
-    expected_board = {i: x for i, x in enumerate(product(range(board_size),
-                                                               repeat=2))}
 
     battle = dict()
     battle['id'] = id
@@ -112,9 +110,14 @@ def test_create_new_battle(mocked_redis):
     model.dumps(battle)
 
     # then
-    battlefield = dict()
-    battlefield['board'] = expected_board
-    expected_battlefield = pickle.dumps(battlefield)
+    expected_board = dict()
+    expected_board['size'] = board_size
+    expected_board['state'] = [[None] * board_size for _ in range(board_size)]
+
+    expected_battle = dict()
+    expected_battle['board'] = expected_board
+
+    pickled_expected_battle = pickle.dumps(expected_battle)
 
     assert mocked_redis.instance.set.call_count == 1
-    mocked_redis.instance.set.assert_called_with(id, expected_battlefield)
+    mocked_redis.instance.set.assert_called_with(id, pickled_expected_battle)

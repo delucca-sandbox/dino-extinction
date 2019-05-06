@@ -74,7 +74,9 @@ def step_impl(context):
 @then('we stored a 2x2 battlefield')
 def step_impl(context):
     data = redis.instance.get(context.battle_id)
-    battlefield = pickle.loads(data)
-    expected_board = {i: x for i, x in enumerate(product(range(2), repeat=2))}
+    battle = pickle.loads(data)
+    expected_state = [[None, None], [None, None]]
+    board = battle['board']
 
-    assert battlefield['board'] == expected_board
+    assert board['state'] == expected_state
+    assert board['size'] == 2

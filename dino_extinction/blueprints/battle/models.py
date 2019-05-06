@@ -1,11 +1,12 @@
-import json
+import pickle
 
 from marshmallow import (Schema, fields, validates, post_dump, ValidationError)
+from itertools import product
 from dino_extinction.infrastructure import redis
 
 class BattleSchema(Schema):
     id = fields.Integer(required=True)
-    state = fields.Dict(default={})
+    board_size = fields.Integer(required=True)
 
     @validates('id')
     def validate_id(self, data):
@@ -17,5 +18,10 @@ class BattleSchema(Schema):
 
     @post_dump
     def create_battle(self, data):
-        json_state = json.dumps(data['state'])
-        redis.instance.set(data['id'], json_state)
+        board = {i: x for i, x in enumerate(product(range(data['board_size']),
+                                                    repeat=2))}
+
+        state = dict()
+        state['board'] = board
+        pickled_state = pickle.dumps(state)
+        redis.instance.set(data['id'], pickled_state)

@@ -52,7 +52,8 @@ def test_handling_model_error(mocked_randint):
     mocked_randint.return_value = fake.word()
 
     # when
-    result = handlers.new_battlefield()
+    errors = handlers.new_battlefield(board_size = fake.word())[0]
 
     # then
-    assert not result
+    assert errors['id'] == ['Not a valid integer.']
+    assert errors['board_size'] == ['Not a valid integer.']

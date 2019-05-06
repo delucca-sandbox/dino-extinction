@@ -1,14 +1,20 @@
+import pickle
 import json
 
 from behave import *
 from mock import patch
 from faker import Faker
+from itertools import product
 from dino_extinction.infrastructure import redis
 
 
 @given('a valid request')
 def step_impl(context):
     context.params = {}
+
+@given('a valid request asking for 2x2 grid')
+def step_impl(context):
+    context.params = { 'size': 2 }
 
 
 @when('we create a new battlefield')
@@ -51,6 +57,7 @@ def step_impl(context):
 def step_impl(context):
     assert redis.instance.get(context.battle_id)
 
+
 @then('we receive an error')
 def step_impl(context):
     assert context.failed is False
@@ -58,6 +65,16 @@ def step_impl(context):
 
     response = json.loads(context.response.data.decode('utf-8'))
 
+
 @then('the battlefield was not created')
 def step_impl(context):
     assert not redis.instance.get(context.battle_id)
+
+
+@then('we stored a 2x2 battlefield')
+def step_impl(context):
+    data = redis.instance.get(context.battle_id)
+    battlefield = pickle.loads(data)
+    expected_board = {i: x for i, x in enumerate(product(range(2), repeat=2))}
+
+    assert battlefield['board'] == expected_board

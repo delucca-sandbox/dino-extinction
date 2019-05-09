@@ -1,14 +1,22 @@
+"""Battle Models Unit Tests.
+
+This test file will ensure that the most important logic of our Battle
+blueprint's models are working as we are expecting.
+
+"""
 import pickle
 
 from faker import Faker
 from mock import patch
-from itertools import product
 from dino_extinction.blueprints.battle import models
 
 
 def test_generate_battle_model():
-    """
-    This test ensures that we can generate a valid battle model
+    """Test the creation of a new battle.
+
+    This test will try to create a new battle based on our model and ensure
+    that it is working properly.
+
     """
     # given
     fake = Faker()
@@ -31,9 +39,11 @@ def test_generate_battle_model():
 
 
 def test_id_must_be_int():
-    """
-    This test ensures that our battle only accepts ints
-    as theirs ids
+    """Test ID validation of type.
+
+    This test will try to insert an invalid ID data and check if our model
+    is refusing any inputs that are not integers.
+
     """
     # given
     fake = Faker()
@@ -52,8 +62,11 @@ def test_id_must_be_int():
 
 
 def test_should_refuse_any_id_length_rather_than_4():
-    """
-    This test ensures that our model only accepts an id length of 4
+    """Test ID validation of length.
+
+    This test will try to insert an integer ID, but with a length different
+    from 4 and check if our model refuses it.
+
     """
     # given
     fake = Faker()
@@ -90,8 +103,18 @@ def test_should_refuse_any_id_length_rather_than_4():
 
 @patch('dino_extinction.blueprints.battle.models.redis')
 def test_create_new_battle(mocked_redis):
-    """
-    This test ensures that we can create a new battle on our model
+    """Test a new battle creation.
+
+    This test will try to create a new battle and check if it is inserting
+    the data in our Redis instance.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_redis : magic mock
+        The mock of our Redis module.
+
     """
     # given
     fake = Faker()

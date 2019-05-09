@@ -1,3 +1,9 @@
+"""Battle Handlers Unit Tests.
+
+This test file will ensure that the most important logic of our Battle
+blueprint's handlers are working as we are expecting.
+
+"""
 from mock import patch
 from faker import Faker
 from dino_extinction.blueprints.battle import handlers
@@ -5,9 +11,18 @@ from dino_extinction.blueprints.battle import handlers
 
 @patch('dino_extinction.blueprints.battle.handlers.models')
 def test_called_model(mocked_models):
-    """
-    This test ensures that our handler is calling our model with
-    the right arguments
+    """Test the calling of our model.
+
+    This test will ensure that our handler is calling our model during the
+    creation of a new battlefield.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_models : magic mock
+        The mock of our battle models module.
+
     """
     # given
     mocked_instance = mocked_models.BattleSchema.return_value
@@ -22,9 +37,18 @@ def test_called_model(mocked_models):
 
 @patch('dino_extinction.blueprints.battle.handlers.models')
 def test_creating_pin_id_to_battle(mocked_models):
-    """
-    This test ensures that our handler is calling our model
-    with a 4-digit pin code for each new battle
+    """Test the creation of a new battle ID.
+
+    This test will ensure that we are creating a 4 digit long ID every
+    time a new battle is created.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_models : magic mock
+        The mock of our battle models module.
+
     """
     # given
     mocked_instance = mocked_models.BattleSchema.return_value
@@ -43,16 +67,25 @@ def test_creating_pin_id_to_battle(mocked_models):
 
 @patch('dino_extinction.blueprints.battle.handlers.randint')
 def test_handling_model_error(mocked_randint):
-    """
-    This test ensures that our handler is responding an error
-    if the model couldn't create a new battle
+    """Test the error handling.
+
+    This test will ensure that we are dealing correctly with any error. More
+    specifically in a case where we try to insert a wrong ID type
+
+    ...
+
+    Parameters
+    ----------
+    mocked_randint : magic mock
+        The mock of the randint function, that creates our IDs.
+
     """
     # given
     fake = Faker()
     mocked_randint.return_value = fake.word()
 
     # when
-    errors = handlers.new_battlefield(board_size = fake.word())[0]
+    errors = handlers.new_battlefield(board_size=fake.word())[0]
 
     # then
     assert errors['id'] == ['Not a valid integer.']

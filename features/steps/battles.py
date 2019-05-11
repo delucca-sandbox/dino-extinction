@@ -1,6 +1,6 @@
-"""battle Steps.
+"""Battles Steps.
 
-This module contains every step to test the behaviour of our battle
+This module contains every step to test the behaviour of our Battles
 services.
 
 """
@@ -13,7 +13,7 @@ from faker import Faker
 from dino_extinction.infrastructure import redis
 
 
-@given('a valid request')
+@given('a valid new battle request')
 def step_generate_valid_request(context):
     """Generate a valid request.
 
@@ -30,7 +30,7 @@ def step_generate_valid_request(context):
     context.params = {}
 
 
-@given('a valid request asking for 2x2 grid')
+@given('a valid new battle request asking for 2x2 grid')
 def step_generate_request_2x2(context):
     """Generate a valid request asking for a 2x2 grid.
 

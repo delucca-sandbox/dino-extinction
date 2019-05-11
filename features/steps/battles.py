@@ -1,6 +1,6 @@
-"""Battlefield Steps.
+"""battle Steps.
 
-This module contains every step to test the behaviour of our battlefield
+This module contains every step to test the behaviour of our battle
 services.
 
 """
@@ -17,7 +17,7 @@ from dino_extinction.infrastructure import redis
 def step_generate_valid_request(context):
     """Generate a valid request.
 
-    This function will generate a valid request for a new battlefield.
+    This function will generate a valid request for a new battle.
 
     ...
 
@@ -35,7 +35,7 @@ def step_generate_request_2x2(context):
     """Generate a valid request asking for a 2x2 grid.
 
     This function will generate a valid request payload asking for a 2x2
-    battlefield grid.
+    battle grid.
 
     ...
 
@@ -48,12 +48,12 @@ def step_generate_request_2x2(context):
     context.params = {'size': 2}
 
 
-@when('we create a new battlefield')
-def step_create_new_battlefield(context):
-    """Create a new battlefield request.
+@when('we create a new battle')
+def step_create_new_battle(context):
+    """Create a new battle request.
 
-    This function will do a post request to our battlefield service asking
-    to create a new battlefield using the params from our context.
+    This function will do a post request to our battle service asking
+    to create a new battle using the params from our context.
 
     ...
 
@@ -63,21 +63,21 @@ def step_create_new_battlefield(context):
         The behave context of the current feature test.
 
     """
-    context.response = context.client.post('/battle/new',
+    context.response = context.client.post('/battles/new',
                                            data=context.params,
                                            follow_redirects=True)
 
     assert context.response
 
 
-@when('we create an invalid battlefield')
-@patch('dino_extinction.blueprints.battle.handlers.randint')
+@when('we create an invalid battle')
+@patch('dino_extinction.blueprints.battles.handlers.randint')
 def step_handle_error(context, mocked_randint):
-    """Create a new battlefield request mocking for an error.
+    """Create a new battle request mocking for an error.
 
-    This function will do a post request to our battlefield service asking
-    to create a new battlefield using the params from our context, but it
-    will also mock the ID generation of the battlefield in order to fail.
+    This function will do a post request to our battle service asking
+    to create a new battle using the params from our context, but it
+    will also mock the ID generation of the battle in order to fail.
 
     ...
 
@@ -94,7 +94,7 @@ def step_handle_error(context, mocked_randint):
     battle_id = fake.word()
     mocked_randint.return_value = battle_id
 
-    context.response = context.client.post('/battle/new',
+    context.response = context.client.post('/battles/new',
                                            data=context.params,
                                            follow_redirects=True)
 
@@ -103,12 +103,12 @@ def step_handle_error(context, mocked_randint):
     context.battle_id = battle_id
 
 
-@then('we receive the battlefield ID')
-def step_assert_received_battlefield_id(context):
-    """Assert that we received the battlefield ID.
+@then('we receive the battle ID')
+def step_assert_received_battle_id(context):
+    """Assert that we received the battle ID.
 
     This function will assert that our service is responding with the
-    created battlefield ID.
+    created battle ID.
 
     ...
 
@@ -127,11 +127,11 @@ def step_assert_received_battlefield_id(context):
     context.battle_id = response['id']
 
 
-@then('the battlefield was created')
-def step_assert_battlefield_was_created(context):
-    """Assert that the battlefield was created.
+@then('the battle was created')
+def step_assert_battle_was_created(context):
+    """Assert that the battle was created.
 
-    This function will check on Redis if the battlefield was successfully
+    This function will check on Redis if the battle was successfully
     created.
 
     ...
@@ -166,11 +166,11 @@ def step_assert_error_received(context):
     json.loads(context.response.data.decode('utf-8'))
 
 
-@then('the battlefield was not created')
-def step_assert_battlefield_not_created(context):
-    """Assert battlefield was not created.
+@then('the battle was not created')
+def step_assert_battle_not_created(context):
+    """Assert battle was not created.
 
-    This test will ensure that the battlefield was not created on Redis if
+    This test will ensure that the battle was not created on Redis if
     anything goes wrong in our service.
 
     ...
@@ -184,11 +184,11 @@ def step_assert_battlefield_not_created(context):
     assert not redis.instance.get(context.battle_id)
 
 
-@then('we stored a 2x2 battlefield')
-def step_assert_stored_battlefield(context):
-    """Assert stored battlefield with custom size.
+@then('we stored a 2x2 battle')
+def step_assert_stored_battle(context):
+    """Assert stored battle with custom size.
 
-    This test will ensure that we can create a new battlefield with a custom
+    This test will ensure that we can create a new battle with a custom
     grid size.
 
     ...

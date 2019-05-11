@@ -8,7 +8,7 @@ import pickle
 
 from faker import Faker
 from mock import patch
-from dino_extinction.blueprints.battle import models
+from dino_extinction.blueprints.battles import models
 
 
 def test_generate_battle_model():
@@ -101,7 +101,7 @@ def test_should_refuse_any_id_length_rather_than_4():
     assert b_result.errors['id'][0] == 'The battle ID should be 4 digits long.'
 
 
-@patch('dino_extinction.blueprints.battle.models.redis')
+@patch('dino_extinction.blueprints.battles.models.redis')
 def test_create_new_battle(mocked_redis):
     """Test a new battle creation.
 

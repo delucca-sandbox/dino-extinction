@@ -1,4 +1,4 @@
-"""Battle Models.
+"""Battles Models.
 
 This module contains all the classes and methods regarding our
 battle blueprint models.
@@ -21,7 +21,7 @@ class BattleSchema(Schema):
     Attributes
     ----------
     id : int
-        The ID of the battlefield that you're handling.
+        The ID of the battle that you're handling.
 
     board_size : int
         The size of the board that you are creating.
@@ -32,10 +32,10 @@ class BattleSchema(Schema):
 
     @validates('id')
     def validate_id(self, data):
-        """Validate the length of battlefield ID.
+        """Validate the length of battle ID.
 
         This validator checks if the number of digits of our current
-        battlefield ID is 4. If not, it will raise an error.
+        battle ID is 4. If not, it will raise an error.
 
         ...
 
@@ -53,9 +53,9 @@ class BattleSchema(Schema):
 
     @post_dump
     def create_battle(self, data):
-        """Create a new battlefield.
+        """Create a new battle.
 
-        This method will create a new battlefield if you try to dump a new
+        This method will create a new battle if you try to dump a new
         data and all the attributes are valid.
 
         ...
@@ -64,7 +64,7 @@ class BattleSchema(Schema):
         ----------
         data : dict
             A dict containing all the data that you are trying to insert into
-            the new battlefield. Valid keys: board_size, size and state.
+            the new battle. Valid keys: board_size, size and state.
 
         """
         board_size = data['board_size']

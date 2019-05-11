@@ -1,9 +1,9 @@
-"""Battle API routes.
+"""Battles API routes.
 
 This module is responsible for creating our API routes for our Battle
 service. We're using our Battle Blueprint to do so.
 
-Prefix: /battle
+Prefix: /battles
 
 """
 import json
@@ -12,9 +12,9 @@ from flask import (Response, request)
 
 
 def set_routes(bp, handlers):
-    """Set the routes for our Battle Blueprint.
+    """Set the routes for our Battles Blueprint.
 
-    This function sets the routes for our Battle Blueprint. It will
+    This function sets the routes for our Battles Blueprint. It will
     start every route that is specified inside of this function.
 
     ...
@@ -31,7 +31,7 @@ def set_routes(bp, handlers):
     @bp.route('/new', methods=['POST'])
     def index():
         board_size = request.values.get('size') or 50
-        errors, battle = handlers.new_battlefield(board_size=board_size)
+        errors, battle = handlers.new_battle(board_size=board_size)
         parsed = json.dumps(False if errors else battle)
         status = 500 if errors else 200
         mimetype = 'application/json'

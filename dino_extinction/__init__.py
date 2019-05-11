@@ -52,10 +52,10 @@ def create_app(env='DEVELOPMENT'):
         redis.bind(app)
 
         from dino_extinction.blueprints import healthcheck
-        from dino_extinction.blueprints import battle
+        from dino_extinction.blueprints import battles
 
         app.register_blueprint(healthcheck.bp, url_prefix='/healthcheck')
-        app.register_blueprint(battle.bp, url_prefix='/battle')
+        app.register_blueprint(battles.bp, url_prefix='/battles')
 
         return app
 

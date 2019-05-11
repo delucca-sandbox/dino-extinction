@@ -2,21 +2,21 @@
 
 This is a web API. So, all of the following endpoint should have the prefix: `localhost/` in order to worker. Here are the list of all the available endpoints for this application:
 
-* [`battle/new`](#battle/new)
-* [`battle/state`](#battle/state)
+* [`battles/new`](#battles/new)
+* [`battles/state`](#battles/state)
 * [`robots/new`](#robots/new)
 * [`robots/command`](#robots/command)
 * [`dinosaurs/new`](#dinosaurs/new)
 
 
-## `battle/new`
+## `battles/new`
 
 Creates a new 50x50 battle. Stay focused! Because in this endpoint you will receive your battle ID and **you should not lose it** if you want to move your robots to attack.
 
     $ POST http://localhost/battle/new
 
 
-## `battle/state`
+## `battles/state`
 
 Get the current state of the battle, showing the robots and dinosaurs positions.
 

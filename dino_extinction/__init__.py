@@ -53,9 +53,11 @@ def create_app(env='DEVELOPMENT'):
 
         from dino_extinction.blueprints import healthcheck
         from dino_extinction.blueprints import battles
+        from dino_extinction.blueprints import dinossaurs
 
         app.register_blueprint(healthcheck.bp, url_prefix='/healthcheck')
         app.register_blueprint(battles.bp, url_prefix='/battles')
+        app.register_blueprint(dinossaurs.bp, url_prefix='/dinossaurs')
 
         return app
 

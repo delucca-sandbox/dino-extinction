@@ -1,7 +1,7 @@
 """Battles API routes.
 
 This module is responsible for creating our API routes for our Battle
-service. We're using our Battle Blueprint to do so.
+service. We're using our Battles Blueprint to do so.
 
 Prefix: /battles
 

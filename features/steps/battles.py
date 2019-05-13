@@ -92,15 +92,14 @@ def step_handle_error(context, mocked_randint):
     """
     fake = Faker()
     battle_id = fake.word()
-    mocked_randint.return_value = battle_id
 
+    context.battle_id = battle_id
+    mocked_randint.return_value = battle_id
     context.response = context.client.post('/battles/new',
                                            data=context.params,
                                            follow_redirects=True)
 
     assert context.response
-
-    context.battle_id = battle_id
 
 
 @then('we receive the battle ID')

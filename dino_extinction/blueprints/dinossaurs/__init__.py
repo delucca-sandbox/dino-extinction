@@ -1,6 +1,6 @@
-"""Dinossaurs Blueprint.
+"""Battles Blueprint.
 
-This module will initialize the Dinossaurs Blueprint. Creating the
+This module will initialize the Battles Blueprint. Creating the
 Blueprint, setting it up and also creating it's routes.
 
 """
@@ -8,5 +8,5 @@ from flask import Blueprint
 from . import routes
 from . import handlers
 
-bp = Blueprint('dinossaurs', __name__)
+bp = Blueprint('battles', __name__)
 routes.set_routes(bp, handlers)

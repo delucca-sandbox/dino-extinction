@@ -12,8 +12,8 @@ from dino_extinction.infrastructure import redis
 from . import constants
 
 
-class DinnosaurSchema(Schema):
-    """DinnosaurSchema Class.
+class DinossaurSchema(Schema):
+    """DinosaurSchema Class.
 
     This class is responsible for handling all data regarding our
     dinossaurs schema.
@@ -30,7 +30,7 @@ class DinnosaurSchema(Schema):
 
     """
     battle_id = fields.Integer(required=True)
-    position = fields.Tuple(required=True)
+    position = fields.List(fields.Integer, required=True)
 
     @validates('battle_id')
     def validate_battle_id(self, data):
@@ -70,20 +70,34 @@ class DinnosaurSchema(Schema):
 
         """
         battle_id = data['battle_id']
-        dinossaur_id = _create_dino_id()
+        position = data['position']
+        xPos = position[0]
+        yPos = position[1]
+
+        dinossaur_id = self._create_dino_id()
 
         dinossaur = dict()
         dinossaur['id'] = dinossaur_id
-        dinossaur['type'] = TYPE
-        dinossaur['position'] = data['position']
+        dinossaur['type'] = constants.TYPE
+        dinossaur['position'] = position
 
-        raw_battle = redis.instance.set(battle_id)
+        raw_battle = redis.instance.get(battle_id)
+        if not raw_battle:
+            raise ValidationError('Invalid battleId')
+
         battle = pickle.loads(raw_battle)
-        battle['entities'] = #TODO
-        pickled_battle = pickle.dumps(battle)
-        redis.instance.set(data['id'], pickled_battle)
+        board = battle['board']['state']
+        if board[xPos][yPos]:
+            raise ValidationError('This position is not empty')
 
+        battle.setdefault('entities', {}).update({dinossaur_id: dinossaur})
+        board[xPos][yPos] = dinossaur_id
+
+        pickled_battle = pickle.dumps(battle)
+        redis.instance.set(battle_id, pickled_battle)
+
+        return dinossaur
 
     def _create_dino_id(self):
-        r = randint(0000,9999)
+        r = randint(0000, 9999)
         return 'D-{0:04d}'.format(r)

@@ -1,7 +1,7 @@
 """Battle Models Unit Tests.
 
 This test file will ensure that the most important logic of our Battle
-blueprint's models are working as we are expecting.
+blueprint models are working as we are expecting.
 
 """
 import pickle
@@ -12,7 +12,7 @@ from dino_extinction.blueprints.battles import models
 
 
 def test_generate_battle_model():
-    """Test the creation of a new battle.
+    """Create a new battle.
 
     This test will try to create a new battle based on our model and ensure
     that it is working properly.
@@ -39,7 +39,7 @@ def test_generate_battle_model():
 
 
 def test_id_must_be_int():
-    """Test ID validation of type.
+    """Validate ID type.
 
     This test will try to insert an invalid ID data and check if our model
     is refusing any inputs that are not integers.
@@ -62,7 +62,7 @@ def test_id_must_be_int():
 
 
 def test_should_refuse_any_id_length_rather_than_4():
-    """Test ID validation of length.
+    """Validate ID length.
 
     This test will try to insert an integer ID, but with a length different
     from 4 and check if our model refuses it.
@@ -103,7 +103,7 @@ def test_should_refuse_any_id_length_rather_than_4():
 
 @patch('dino_extinction.blueprints.battles.models.redis')
 def test_create_new_battle(mocked_redis):
-    """Test a new battle creation.
+    """New battle creation.
 
     This test will try to create a new battle and check if it is inserting
     the data in our Redis instance.

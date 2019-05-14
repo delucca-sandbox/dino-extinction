@@ -1,7 +1,7 @@
 """Battle Handlers Unit Tests.
 
 This test file will ensure that the most important logic of our Battle
-blueprint's handlers are working as we are expecting.
+blueprint handlers are working as we are expecting.
 
 """
 from mock import patch

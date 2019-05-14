@@ -9,7 +9,7 @@ Feature: create a new battle
   Scenario: be able to receive an error
       Given a valid new battle request
        When we create an invalid battle
-       Then we receive an error
+       Then we receive an battle error
         And the battle was not created
 
   Scenario: be able to store a 2x2 grid

@@ -8,5 +8,5 @@ from flask import Blueprint
 from . import routes
 from . import handlers
 
-bp = Blueprint('dinossaurs', __name__)
+bp = Blueprint('battles', __name__)
 routes.set_routes(bp, handlers)

@@ -17,7 +17,7 @@ from dino_extinction.infrastructure import redis
 def step_generate_valid_request(context):
     """Generate a valid request.
 
-    This function will generate a valid request for a new battle.
+    This step will generate a valid request for a new battle.
 
     ...
 
@@ -34,7 +34,7 @@ def step_generate_valid_request(context):
 def step_generate_request_2x2(context):
     """Generate a valid request asking for a 2x2 grid.
 
-    This function will generate a valid request payload asking for a 2x2
+    This step will generate a valid request payload asking for a 2x2
     battle grid.
 
     ...
@@ -52,7 +52,7 @@ def step_generate_request_2x2(context):
 def step_create_new_battle(context):
     """Create a new battle request.
 
-    This function will do a post request to our battle service asking
+    This step will do a post request to our battle service asking
     to create a new battle using the params from our context.
 
     ...
@@ -75,7 +75,7 @@ def step_create_new_battle(context):
 def step_handle_error(context, mocked_randint):
     """Create a new battle request mocking for an error.
 
-    This function will do a post request to our battle service asking
+    This step will do a post request to our battle service asking
     to create a new battle using the params from our context, but it
     will also mock the ID generation of the battle in order to fail.
 
@@ -106,7 +106,7 @@ def step_handle_error(context, mocked_randint):
 def step_assert_received_battle_id(context):
     """Assert that we received the battle ID.
 
-    This function will assert that our service is responding with the
+    This step will assert that our service is responding with the
     created battle ID.
 
     ...
@@ -130,7 +130,7 @@ def step_assert_received_battle_id(context):
 def step_assert_battle_was_created(context):
     """Assert that the battle was created.
 
-    This function will check on Redis if the battle was successfully
+    This step will check on Redis if the battle was successfully
     created.
 
     ...
@@ -144,11 +144,11 @@ def step_assert_battle_was_created(context):
     assert redis.instance.get(context.battle_id)
 
 
-@then('we receive an error')
+@then('we receive an battle error')
 def step_assert_error_received(context):
     """Assert that we received an error.
 
-    This function will check if we have received an error if anything goes
+    This step will check if we have received an error if anything goes
     wrong in our server.
 
     ...
@@ -169,7 +169,7 @@ def step_assert_error_received(context):
 def step_assert_battle_not_created(context):
     """Assert battle was not created.
 
-    This test will ensure that the battle was not created on Redis if
+    This step will ensure that the battle was not created on Redis if
     anything goes wrong in our service.
 
     ...
@@ -187,7 +187,7 @@ def step_assert_battle_not_created(context):
 def step_assert_stored_battle(context):
     """Assert stored battle with custom size.
 
-    This test will ensure that we can create a new battle with a custom
+    This step will ensure that we can create a new battle with a custom
     grid size.
 
     ...

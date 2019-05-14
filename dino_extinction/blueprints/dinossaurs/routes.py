@@ -34,9 +34,9 @@ def set_routes(bp, handlers):
         board_position = (request.values.get('xPosition'),
                           request.values.get('yPosition'))
 
-        errors, data = handlers.new_dinossaur(battle_id=battle_id,
+        errors, _ = handlers.new_dinossaur(battle_id=battle_id,
                                               board_position=board_position)
-        parsed = json.dumps(False if errors else data)
+        parsed = json.dumps(False if errors else 'Dinossaur created')
         status = 500 if errors else 200
         mimetype = 'application/json'
 

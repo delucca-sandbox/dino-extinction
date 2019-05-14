@@ -11,7 +11,7 @@ from behave import (given, then)
 def step_given_empty_request(context):
     """Generate an empty request.
 
-    This function will generate an empty request to our healthcheck service.
+    This step will generate an empty request to our healthcheck service.
 
     ...
 
@@ -31,7 +31,7 @@ def step_given_empty_request(context):
 def step_should_receive_200(context):
     """Assert the request succeeded.
 
-    This function will assert that the current request has succeeded.
+    This step will assert that the current request has succeeded.
 
     ...
 

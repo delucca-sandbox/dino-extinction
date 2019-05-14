@@ -4,9 +4,8 @@ This module contains all handlers that we are going to use in our
 Dinossaurs Module API. They will be used inside our routes.
 
 """
-import json
-
 from . import models
+
 
 def new_dinossaur(battle_id, board_position):
     """Create a new dinossaur.
@@ -29,7 +28,7 @@ def new_dinossaur(battle_id, board_position):
         A tuple with a given X and Y positions to your dinossaur.
 
     Returns
-    .......
+    -------
     errors : dict
         A dict containing every error that happened during the dinossaur
         creation (if any).
@@ -39,6 +38,7 @@ def new_dinossaur(battle_id, board_position):
 
     """
     dinossaur = dict()
+    dinossaur['battle_id'] = battle_id
     dinossaur['position'] = board_position
     dinossaur_model = models.DinossaurSchema()
     created_dinossaur = dinossaur_model.dumps(dinossaur)

@@ -38,21 +38,25 @@ Feature: create a new dinossaur
      Then we receive an dino error
       And the dinossaur was not created
 
-Scenario: should not accept a dinossaur outside of battle area # TODO
-   Given a set of dinossaurs requests outside of battle area
+Scenario: should not accept a dinossaur outside of battle area
+   Given a set of new dinossaur requests
        | battleId | xPosition | yPosition |
        | 1        | 51        | 49        |
        | 1        | 49        | 51        |
        | 1        | 51        | 51        |
      And an existing battle
+     And a snapshot of all battles
     When we ask to create a new dinossaur
     Then we receive an dino error
      And the dinossaur was not created
 
 Scenario: should be able to insert multiple dinossaurs
-   Given a valid new dinossaur request
-     And and a second new dinossaur request
+   Given a set of new dinossaur requests
+       | battleId | xPosition | yPosition |
+       | 1        | 5         | 49        |
+       | 1        | 49        | 50        |
+       | 2        | 50        | 50        |
+     And an existing battle
     When we ask to create a new dinossaur
-     And we ask to create the second dinossaur
     Then we receive the status of the creation
-     And both dinossaurs were created
+     And the dinossaur was created

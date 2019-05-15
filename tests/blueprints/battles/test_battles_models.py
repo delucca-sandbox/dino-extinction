@@ -21,9 +21,9 @@ def test_generate_battle_model():
     # given
     fake = Faker()
     fake.provider('address')
-    digits = [str(fake.random_digit()) for _ in range(4)]
+    digits = [str(fake.random_int(min=1, max=9)) for _ in range(4)]
     id = int(''.join(digits))
-    board_size = fake.random_digit()
+    board_size = fake.random_int(min=1, max=9)
 
     battle = dict()
     battle['id'] = id
@@ -50,7 +50,7 @@ def test_id_must_be_int():
     fake.provider('python')
     battle = dict()
     battle['id'] = fake.word()
-    battle['board_size'] = fake.random_digit()
+    battle['board_size'] = fake.random_int(min=1, max=9)
 
     # when
     model = models.BattleSchema()
@@ -72,19 +72,19 @@ def test_should_refuse_any_id_length_rather_than_4():
     fake = Faker()
     fake.provider('address')
 
-    a_digits = [str(fake.random_digit()) for _ in range(3)]
+    a_digits = [str(fake.random_int(min=1, max=9)) for _ in range(3)]
     a_id = int(''.join(a_digits))
 
-    b_digits = [str(fake.random_digit()) for _ in range(5)]
+    b_digits = [str(fake.random_int(min=1, max=9)) for _ in range(5)]
     b_id = int(''.join(b_digits))
 
     a_battle = dict()
     a_battle['id'] = a_id
-    a_battle['board_size'] = fake.random_digit()
+    a_battle['board_size'] = fake.random_int(min=1, max=9)
 
     b_battle = dict()
     b_battle['id'] = b_id
-    b_battle['board_size'] = fake.random_digit()
+    b_battle['board_size'] = fake.random_int(min=1, max=9)
 
     # when
     a_model = models.BattleSchema()
@@ -119,9 +119,9 @@ def test_create_new_battle(mocked_redis):
     # given
     fake = Faker()
     fake.provider('address')
-    digits = [str(fake.random_digit()) for _ in range(4)]
+    digits = [str(fake.random_int(min=1, max=9)) for _ in range(4)]
     id = int(''.join(digits))
-    board_size = fake.random_digit()
+    board_size = fake.random_int(min=1, max=9)
 
     battle = dict()
     battle['id'] = id

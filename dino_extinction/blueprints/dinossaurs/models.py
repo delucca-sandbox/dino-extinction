@@ -71,8 +71,8 @@ class DinossaurSchema(Schema):
         """
         battle_id = data['battle_id']
         position = data['position']
-        xPos = position[0]
-        yPos = position[1]
+        xPos = position[0] - 1
+        yPos = position[1] - 1
 
         dinossaur_id = self._create_dino_id()
 
@@ -87,6 +87,9 @@ class DinossaurSchema(Schema):
 
         battle = pickle.loads(raw_battle)
         board = battle['board']['state']
+        if self._is_not_valid_index(xPos, yPos, board):
+            raise ValidationError('This position is out of range')
+
         if board[xPos][yPos]:
             raise ValidationError('This position is not empty')
 
@@ -101,3 +104,6 @@ class DinossaurSchema(Schema):
     def _create_dino_id(self):
         r = randint(0000, 9999)
         return 'D-{0:04d}'.format(r)
+
+    def _is_not_valid_index(self, x, y, board):
+        return x not in range(len(board[0])) or y not in range(len(board))

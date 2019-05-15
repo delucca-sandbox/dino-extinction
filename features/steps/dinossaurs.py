@@ -9,6 +9,7 @@ import pickle
 
 from behave import (given, when, then)
 from faker import Faker
+from collections import Counter
 from dino_extinction.blueprints.battles.models import BattleSchema
 from dino_extinction.blueprints.dinossaurs.models import DinossaurSchema
 from dino_extinction.infrastructure import redis
@@ -55,9 +56,9 @@ def step_generate_valid_request(context):
     context.board_size = 50
 
     request = dict()
-    request.setdefault('battleId', context.faker.random_digit())
-    request.setdefault('xPosition', context.faker.random_digit())
-    request.setdefault('yPosition', context.faker.random_digit())
+    request.setdefault('battleId', context.faker.random_int(min=1, max=9))
+    request.setdefault('xPosition', context.faker.random_int(min=1, max=9))
+    request.setdefault('yPosition', context.faker.random_int(min=1, max=9))
 
     context.requests = [request]
 
@@ -269,12 +270,15 @@ def step_check_if_dinossaur_was_created(context):
         board = battle['board']['state']
         entities = battle['entities']
 
-        assert 'entities' in battle
-        assert len(entities) == len(context.requests)
+        dinos_created = Counter(k['battleId'] for k in context.requests)
+        current_request_dinos = dinos_created.get(battle_id)
 
-        xPos = request['xPosition']
-        yPos = request['yPosition']
-        dino_id = board[xPos][yPos]
+        assert 'entities' in battle
+        assert len(entities) == current_request_dinos
+
+        xPos = int(request['xPosition'])
+        yPos = int(request['yPosition'])
+        dino_id = board[xPos - 1][yPos - 1]
 
         assert dino_id in entities
         assert entities[dino_id]['position'] == [xPos, yPos]

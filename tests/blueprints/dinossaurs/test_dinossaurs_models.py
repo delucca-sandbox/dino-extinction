@@ -29,9 +29,9 @@ def test_generate_dinossaur_model(mocked_redis):
     # given
     fake = Faker()
     fake.provider('address')
-    digits = [str(fake.random_digit()) for _ in range(4)]
+    digits = [str(fake.random_int(min=1, max=9)) for _ in range(4)]
     id = int(''.join(digits))
-    position = [fake.random_digit(), fake.random_digit()]
+    position = [fake.random_int(min=1, max=9), fake.random_int(min=1, max=9)]
 
     state = [[None] * 9 for _ in range(9)]
 
@@ -77,7 +77,7 @@ def test_id_must_be_int():
     fake.provider('python')
     dinossaur = dict()
     dinossaur['battle_id'] = fake.word()
-    dinossaur['position'] = [fake.random_digit(), fake.random_digit()]
+    dinossaur['position'] = [fake.random_int(min=1, max=9), fake.random_int(min=1, max=9)]
 
     # when
     model = models.DinossaurSchema()
@@ -99,7 +99,7 @@ def test_position_must_be_a_list():
     fake = Faker()
     fake.provider('python')
     dinossaur = dict()
-    dinossaur['battle_id'] = fake.random_digit()
+    dinossaur['battle_id'] = fake.random_int(min=1, max=9)
     dinossaur['position'] = fake.word()
 
     # when
@@ -122,19 +122,19 @@ def test_should_refuse_any_id_length_rather_than_4():
     fake = Faker()
     fake.provider('address')
 
-    a_digits = [str(fake.random_digit()) for _ in range(3)]
+    a_digits = [str(fake.random_int(min=1, max=9)) for _ in range(3)]
     a_id = int(''.join(a_digits))
 
-    b_digits = [str(fake.random_digit()) for _ in range(5)]
+    b_digits = [str(fake.random_int(min=1, max=9)) for _ in range(5)]
     b_id = int(''.join(b_digits))
 
     a_dinossaur = dict()
     a_dinossaur['battle_id'] = a_id
-    a_dinossaur['position'] = [fake.random_digit(), fake.random_digit()]
+    a_dinossaur['position'] = [fake.random_int(min=1, max=9), fake.random_int(min=1, max=9)]
 
     b_dinossaur = dict()
     b_dinossaur['battle_id'] = b_id
-    b_dinossaur['position'] = [fake.random_digit(), fake.random_digit()]
+    b_dinossaur['position'] = [fake.random_int(min=1, max=9), fake.random_int(min=1, max=9)]
 
     # when
     a_model = models.DinossaurSchema()
@@ -171,12 +171,14 @@ def test_raise_error_if_position_isnt_empty(mocked_redis):
     # given
     fake = Faker()
     fake.provider('address')
-    digits = [str(fake.random_digit()) for _ in range(4)]
+    digits = [str(fake.random_int(min=1, max=9)) for _ in range(4)]
     id = int(''.join(digits))
-    position = [fake.random_digit(), fake.random_digit()]
+    position = [fake.random_int(min=1, max=9), fake.random_int(min=1, max=9)]
+    print(position)
 
-    state = [[None] * 9 for _ in range(9)]
-    state[position[0]][position[1]] = fake.word()
+    state = [[None] * 9 for _ in range(10)]
+    print(state)
+    state[position[0] - 1][position[1] - 1] = fake.word()
 
     board = dict()
     board.setdefault('state', state)
@@ -197,4 +199,50 @@ def test_raise_error_if_position_isnt_empty(mocked_redis):
 
     # then
     assert result.errors['_schema'][0] == 'This position is not empty'
+    mocked_redis.instance.set.assert_not_called()
+
+
+@patch('dino_extinction.blueprints.dinossaurs.models.redis')
+def test_raise_error_if_position_is_out_of_range(mocked_redis):
+    """Refuse positions that is out of range.
+
+    This test will try to create a new dinossaur with a position out of
+    range. It will succeed if it raises an error.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_redis : magic mock
+        The mock of our Redis module.
+
+    """
+    # given
+    fake = Faker()
+    fake.provider('address')
+    digits = [str(fake.random_int(min=1, max=9)) for _ in range(4)]
+    id = int(''.join(digits))
+    position = [fake.random_int(min=10, max=9999), fake.random_int(min=1, max=9999)]
+
+    state = [[None] * 9 for _ in range(9)]
+
+    board = dict()
+    board.setdefault('state', state)
+
+    battle = dict()
+    battle.setdefault('board', board)
+
+    pickled_battle = pickle.dumps(battle)
+    mocked_redis.instance.get.return_value = pickled_battle
+
+    dinossaur = dict()
+    dinossaur['battle_id'] = id
+    dinossaur['position'] = position
+
+    # when
+    model = models.DinossaurSchema()
+    result = model.dumps(dinossaur)
+
+    # then
+    assert result.errors['_schema'][0] == 'This position is out of range'
     mocked_redis.instance.set.assert_not_called()

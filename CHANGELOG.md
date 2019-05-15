@@ -13,4 +13,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Created the default project structure
 - Created the healthcheck route
 - Developed the integration with redis
-- Developed the first route: create a new battle
+- Developed the create new battle route and service
+- Developed the create new dinossaur route and service

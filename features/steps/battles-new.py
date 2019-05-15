@@ -12,6 +12,9 @@ from mock import patch
 from faker import Faker
 from dino_extinction.infrastructure import redis
 
+###
+### GIVEN STEPS
+###
 
 @given('a valid new battle request')
 def step_generate_valid_request(context):
@@ -27,7 +30,11 @@ def step_generate_valid_request(context):
         The behave context of the current feature test.
 
     """
-    context.params = {}
+    context.board_size = 50
+
+    request = dict()
+
+    context.requests = [request]
 
 
 @given('a valid new battle request asking for 2x2 grid')
@@ -45,15 +52,23 @@ def step_generate_request_2x2(context):
         The behave context of the current feature test.
 
     """
-    context.params = {'size': 2}
+    context.board_size = 2
 
+    request = dict()
+    request.setdefault('size', context.board_size)
 
-@when('we create a new battle')
+    context.requests = [request]
+
+###
+### WHEN STEPS
+###
+
+@when('we ask to create a new battle')
 def step_create_new_battle(context):
     """Create a new battle request.
 
     This step will do a post request to our battle service asking
-    to create a new battle using the params from our context.
+    to create all the battles that are set in the requests context.
 
     ...
 
@@ -63,11 +78,14 @@ def step_create_new_battle(context):
         The behave context of the current feature test.
 
     """
-    context.response = context.client.post('/battles/new',
-                                           data=context.params,
-                                           follow_redirects=True)
+    context.created_battles = len(context.requests)
+    context.responses = [context.client.post('/battles/new',
+                                             data=request,
+                                             follow_redirects=True)
+                         for request in context.requests]
 
-    assert context.response
+    assert context.responses
+    assert context.created_battles
 
 
 @when('we create an invalid battle')
@@ -92,15 +110,21 @@ def step_handle_error(context, mocked_randint):
     """
     fake = Faker()
     battle_id = fake.word()
-
-    context.battle_id = battle_id
     mocked_randint.return_value = battle_id
-    context.response = context.client.post('/battles/new',
-                                           data=context.params,
-                                           follow_redirects=True)
 
-    assert context.response
+    context.battle_ids = [battle_id]
+    context.created_battles = len(context.requests)
+    context.responses = [context.client.post('/battles/new',
+                                             data=request,
+                                             follow_redirects=True)
+                         for request in context.requests]
 
+    assert context.responses
+    assert context.created_battles
+
+###
+### THEN STEPS
+###
 
 @then('we receive the battle ID')
 def step_assert_received_battle_id(context):
@@ -117,13 +141,14 @@ def step_assert_received_battle_id(context):
         The behave context of the current feature test.
 
     """
-    assert context.failed is False
-    assert context.response.status_code == 200
+    context.battle_ids = []
 
-    response = json.loads(context.response.data.decode('utf-8'))
-    assert response['id']
+    for response in context.responses:
+        result = json.loads(response.data.decode('utf-8'))
+        context.battle_ids.append(result['id'])
 
-    context.battle_id = response['id']
+        assert response.status_code == 200
+        assert result['id']
 
 
 @then('the battle was created')
@@ -141,28 +166,8 @@ def step_assert_battle_was_created(context):
         The behave context of the current feature test.
 
     """
-    assert redis.instance.get(context.battle_id)
-
-
-@then('we receive an battle error')
-def step_assert_error_received(context):
-    """Assert that we received an error.
-
-    This step will check if we have received an error if anything goes
-    wrong in our server.
-
-    ...
-
-    Parameters
-    ----------
-    context : behave context
-        The behave context of the current feature test.
-
-    """
-    assert context.failed is False
-    assert context.response.status_code == 500
-
-    json.loads(context.response.data.decode('utf-8'))
+    for battle_id in context.battle_ids:
+        assert redis.instance.get(battle_id)
 
 
 @then('the battle was not created')
@@ -180,7 +185,8 @@ def step_assert_battle_not_created(context):
         The behave context of the current feature test.
 
     """
-    assert not redis.instance.get(context.battle_id)
+    for battle_id in context.battle_ids:
+        assert not redis.instance.get(battle_id)
 
 
 @then('we stored a 2x2 battle')
@@ -198,10 +204,11 @@ def step_assert_stored_battle(context):
         The behave context of the current feature test.
 
     """
-    data = redis.instance.get(context.battle_id)
-    battle = pickle.loads(data)
-    expected_state = [[None, None], [None, None]]
-    board = battle['board']
+    for battle_id in context.battle_ids:
+        data = redis.instance.get(battle_id)
+        battle = pickle.loads(data)
+        expected_state = [[None, None], [None, None]]
+        board = battle['board']
 
-    assert board['state'] == expected_state
-    assert board['size'] == 2
+        assert board['state'] == expected_state
+        assert board['size'] == 2

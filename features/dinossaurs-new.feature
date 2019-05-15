@@ -1,12 +1,16 @@
 Feature: create a new dinossaur
 
-  Scenario: be able to create a new dinossaur
+  Scenario Outline: be able to create a new dinossaur
      Given a fake data provider
        And a valid new dinossaur request
        And an existing battle
       When we ask to create a new dinossaur
-      Then we receive the status of the creation
+      Then we get a success <message>
        And the dinossaur was created
+
+  Examples: Messages
+    |  message          |
+    | Dinossaur created |
 
   Scenario: must provide all required params
       Given a set of new dinossaur requests
@@ -17,7 +21,7 @@ Feature: create a new dinossaur
         And an existing battle
         And a snapshot of all battles
        When we ask to create a new dinossaur
-       Then we receive an dino error
+       Then we receive an error
         And the dinossaur was not created
 
   Scenario: must provide an valid battleId
@@ -26,16 +30,16 @@ Feature: create a new dinossaur
        And an non-existing battle
        And a snapshot of all battles
       When we ask to create a new dinossaur
-      Then we receive an dino error
+      Then we receive an error
 
  Scenario: should not accept a dinossaur into a taken position
     Given a fake data provider
       And a valid new dinossaur request
       And an existing battle
-      And and a dinossaur already at that place
+      And a dinossaur already at that place
       And a snapshot of all battles
      When we ask to create a new dinossaur
-     Then we receive an dino error
+     Then we receive an error
       And the dinossaur was not created
 
 Scenario: should not accept a dinossaur outside of battle area
@@ -47,10 +51,10 @@ Scenario: should not accept a dinossaur outside of battle area
      And an existing battle
      And a snapshot of all battles
     When we ask to create a new dinossaur
-    Then we receive an dino error
+    Then we receive an error
      And the dinossaur was not created
 
-Scenario: should be able to insert multiple dinossaurs
+Scenario Outline: should be able to insert multiple dinossaurs
    Given a set of new dinossaur requests
        | battleId | xPosition | yPosition |
        | 1        | 5         | 49        |
@@ -58,5 +62,9 @@ Scenario: should be able to insert multiple dinossaurs
        | 2        | 50        | 50        |
      And an existing battle
     When we ask to create a new dinossaur
-    Then we receive the status of the creation
+    Then we get a success <message>
      And the dinossaur was created
+
+Examples: Messages
+  |  message          |
+  | Dinossaur created |

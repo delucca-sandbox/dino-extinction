@@ -1,19 +1,19 @@
-"""Dinossaurs Steps.
+"""Robots Steps.
 
-This module contains every step to test the behaviour of our Dinossaurs
+This module contains every step to test the behaviour of our Robots
 services.
 
 """
 import pickle
 
-from behave import (given, when, then)
 from collections import Counter
-from dino_extinction.blueprints.dinossaurs.models import DinossaurSchema
+from behave import (given, when, then)
+from dino_extinction.blueprints.robots.models import RobotSchema
 from dino_extinction.infrastructure import redis
 
 
-@given('a valid new dinossaur request')
-def step_generate_valid_request(context):
+@given('a valid new robot request')
+def step_create_request(context):
     """Generate a valid request.
 
     This step will generate a valid request with fake data for the
@@ -31,14 +31,16 @@ def step_generate_valid_request(context):
 
     request = dict()
     request.setdefault('battleId', context.faker.random_int(min=1, max=9))
+    request.setdefault('name', context.faker.word())
     request.setdefault('xPosition', context.faker.random_int(min=1, max=9))
     request.setdefault('yPosition', context.faker.random_int(min=1, max=9))
+    request.setdefault('direction', 'north')
 
     context.requests = [request]
 
 
-@given('a set of new dinossaur requests')
-def step_set_of_requests(context):
+@given('a set of new robot requests')
+def step_create_set_of_requests(context):
     """Generate a set of requests.
 
     This step will generate a set of requests based on some data that was
@@ -56,7 +58,7 @@ def step_set_of_requests(context):
     context.board_size = 50
 
     def request_template(row):
-        fields = ['battleId', 'xPosition', 'yPosition']
+        fields = ['battleId', 'name', 'xPosition', 'yPosition', 'direction']
 
         return {field: row[field] for field in fields}
 
@@ -64,11 +66,11 @@ def step_set_of_requests(context):
     assert context.requests
 
 
-@given('a dinossaur already at that place')
-def step_insert_an_inconvenient_dinossaur(context):
-    """Insert an inconvenient dinossaur.
+@given('a robot already at that place')
+def step_insert_robot_at_desired_position(context):
+    """Insert a robot at desired position.
 
-    This step will generate a dinossaur at every place that we are trying
+    This step will generate a robot at every place that we are trying
     to insert dinossaurs to.
 
     ...
@@ -79,22 +81,24 @@ def step_insert_an_inconvenient_dinossaur(context):
         The behave context that is being used in this feature test.
 
     """
-    model = DinossaurSchema()
+    model = RobotSchema()
 
     for request in context.requests:
         data = dict()
         data.setdefault('battle_id', request.get('battleId'))
+        data.setdefault('name', context.faker.word())
+        data.setdefault('direction', 'north')
         data.setdefault('position', (request.get('xPosition'),
                                      request.get('yPosition')))
 
         model.dumps(data)
 
 
-@when('we ask to create a new dinossaur')
-def step_request_new_dinossaur(context):
-    """Request new dinossaur.
+@when('we ask to create a new robot')
+def step_ask_to_create_robot(context):
+    """Request new robot.
 
-    This step will run the request to create a new dinossaur. It can be
+    This step will run the request to create a new robot. It can be
     multiple requests, so it will loop over the requests key into the context
     in order to run all requests.
 
@@ -106,21 +110,21 @@ def step_request_new_dinossaur(context):
         The behave context that is being used in this feature test.
 
     """
-    context.created_dinossaurs = len(context.requests)
-    context.responses = [context.client.post('/dinossaurs/new',
+    context.created_robots = len(context.requests)
+    context.responses = [context.client.post('/robots/new',
                                              data=request,
                                              follow_redirects=True)
                          for request in context.requests]
 
     assert context.responses
-    assert context.created_dinossaurs
+    assert context.created_robots
 
 
-@then('the dinossaur was created')
-def step_check_if_dinossaur_was_created(context):
-    """Check if the dinossaur was created.
+@then('the robot was created')
+def step_check_if_robot_was_created(context):
+    """Check if the robot was created.
 
-    This step compares the number of previous dinossaurs and how many
+    This step compares the number of previous robots and how many
     were created.
 
     ...
@@ -138,25 +142,27 @@ def step_check_if_dinossaur_was_created(context):
         board = battle['board']['state']
         entities = battle['entities']
 
-        dinos_created = Counter(k['battleId'] for k in context.requests)
-        current_request_dinos = dinos_created.get(battle_id)
+        robots_created = Counter(k['battleId'] for k in context.requests)
+        current_request_robots = robots_created.get(battle_id)
 
         assert 'entities' in battle
-        assert len(entities) == current_request_dinos
+        assert len(entities) == current_request_robots
 
         xPos = int(request['xPosition'])
         yPos = int(request['yPosition'])
-        dino_id = board[xPos - 1][yPos - 1]
+        robot_id = board[xPos - 1][yPos - 1]
 
-        assert dino_id in entities
-        assert entities[dino_id]['position'] == [xPos, yPos]
+        assert robot_id in entities
+        assert entities[robot_id]['position'] == [xPos, yPos]
+        assert entities[robot_id]['direction'] == request['direction']
+        assert robot_id == request['name']
 
 
-@then('the dinossaur was not created')
-def step_check_if_the_dino_was_not_created(context):
-    """Check if no dino exists.
+@then('the robot was not created')
+def step_check_if_robot_was_not_created(context):
+    """Check if no robot exists.
 
-    This step will check if we didn't have created any dino in our
+    This step will check if we didn't have created any robot in our
     current battle.
 
     ...

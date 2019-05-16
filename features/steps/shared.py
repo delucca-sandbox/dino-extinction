@@ -11,9 +11,6 @@ from behave import (given, when, then)
 from dino_extinction.blueprints.battles.models import BattleSchema
 from dino_extinction.infrastructure import redis
 
-###
-### GIVEN STEPS
-###
 
 @given('a fake data provider')
 def step_create_fake_data_provider(context):
@@ -118,9 +115,6 @@ def step_take_snapshots(context):
 
     assert len(context.snapshots) > 0
 
-###
-### THEN STEPS
-###
 
 @then('we get a success {message}')
 def step_check_requests_status(context, message):

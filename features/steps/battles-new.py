@@ -12,9 +12,6 @@ from mock import patch
 from faker import Faker
 from dino_extinction.infrastructure import redis
 
-###
-### GIVEN STEPS
-###
 
 @given('a valid new battle request')
 def step_generate_valid_request(context):
@@ -59,9 +56,6 @@ def step_generate_request_2x2(context):
 
     context.requests = [request]
 
-###
-### WHEN STEPS
-###
 
 @when('we ask to create a new battle')
 def step_create_new_battle(context):
@@ -122,9 +116,6 @@ def step_handle_error(context, mocked_randint):
     assert context.responses
     assert context.created_battles
 
-###
-### THEN STEPS
-###
 
 @then('we receive the battle ID')
 def step_assert_received_battle_id(context):

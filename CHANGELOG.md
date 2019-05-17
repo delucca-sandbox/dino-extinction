@@ -15,3 +15,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Developed the integration with redis
 - Developed the create new battle route and service
 - Developed the create new dinossaur route and service
+- Developed the create new robot route and service

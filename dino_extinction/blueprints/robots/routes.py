@@ -1,9 +1,9 @@
-"""Dinossaurs API routes.
+"""Robots API routes.
 
-This module is responsible for creating our API routes for our Dinossaurs
-service. We're using our Dinossaurs Blueprint to do so.
+This module is responsible for creating our API routes for our Robots
+service. We're using our Robots Blueprint to do so.
 
-Prefix: /dinossaurs
+Prefix: /robots
 
 """
 import json
@@ -12,9 +12,9 @@ from flask import (Response, request)
 
 
 def set_routes(bp, handlers):
-    """Set the routes for our Dinossaurs Blueprint.
+    """Set the routes for our Robots Blueprint.
 
-    This function sets the routes for our Dinossaurs Blueprint. It will
+    This function sets the routes for our Robots Blueprint. It will
     start every route that is specified inside of this function.
 
     ...
@@ -31,12 +31,15 @@ def set_routes(bp, handlers):
     @bp.route('/new', methods=['POST'])
     def index():
         battle_id = request.values.get('battleId')
+        direction = request.values.get('direction')
         board_position = (request.values.get('xPosition'),
                           request.values.get('yPosition'))
 
-        errors, _ = handlers.new_dinossaur(battle_id=battle_id,
-                                           board_position=board_position)
-        parsed = json.dumps(False if errors else 'Dinossaur created')
+        errors, _ = handlers.new_robot(battle_id=battle_id,
+                                       direction=direction,
+                                       board_position=board_position)
+        parsed = json.dumps(False if errors else 'Robot created')
+        print(errors)
         status = 500 if errors else 200
         mimetype = 'application/json'
 

@@ -16,8 +16,8 @@ Feature: create a new dinossaur
       Given a set of new dinossaur requests
           | battleId | xPosition | yPosition |
           |          | 1         | 1         |
-          | 1        |           | 1         |
-          | 1        | 1         |           |
+          | 1111     |           | 1         |
+          | 1111     | 1         |           |
         And an existing battle
         And a snapshot of all battles
        When we ask to create a new dinossaur
@@ -45,9 +45,9 @@ Feature: create a new dinossaur
 Scenario: should not accept a dinossaur outside of battle area
    Given a set of new dinossaur requests
        | battleId | xPosition | yPosition |
-       | 1        | 51        | 49        |
-       | 1        | 49        | 51        |
-       | 1        | 51        | 51        |
+       | 1111     | 51        | 49        |
+       | 1111     | 49        | 51        |
+       | 1111     | 51        | 51        |
      And an existing battle
      And a snapshot of all battles
     When we ask to create a new dinossaur
@@ -57,9 +57,9 @@ Scenario: should not accept a dinossaur outside of battle area
 Scenario Outline: should be able to insert multiple dinossaurs
    Given a set of new dinossaur requests
        | battleId | xPosition | yPosition |
-       | 1        | 5         | 49        |
-       | 1        | 49        | 50        |
-       | 2        | 50        | 50        |
+       | 1111     | 5         | 49        |
+       | 1111     | 49        | 50        |
+       | 1111     | 50        | 50        |
      And an existing battle
     When we ask to create a new dinossaur
     Then we get a success <message>

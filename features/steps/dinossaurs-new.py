@@ -30,7 +30,8 @@ def step_generate_valid_request(context):
     context.board_size = 50
 
     request = dict()
-    request.setdefault('battleId', context.faker.random_int(min=1, max=9))
+    request.setdefault('battleId', context.faker.random_int(min=1111,
+                                                            max=9999))
     request.setdefault('xPosition', context.faker.random_int(min=1, max=9))
     request.setdefault('yPosition', context.faker.random_int(min=1, max=9))
 
@@ -87,7 +88,7 @@ def step_insert_an_inconvenient_dinossaur(context):
         data.setdefault('position', (request.get('xPosition'),
                                      request.get('yPosition')))
 
-        model.dumps(data)
+        model.load(data)
 
 
 @when('we ask to create a new dinossaur')

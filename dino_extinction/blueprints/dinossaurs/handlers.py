@@ -11,7 +11,7 @@ def new_dinossaur(battle_id, board_position):
     """Create a new dinossaur.
 
     This handler creates a new dinossaur into a specific board setting it on
-    the provided X and Y positions. It is importante to notice that it will
+    the provided X and Y positions. It is important to notice that it will
     return an error if any of the following cases are true:
         * The user has not provided all parameters
         * The X and Y positions are out of range
@@ -41,6 +41,6 @@ def new_dinossaur(battle_id, board_position):
     dinossaur['battle_id'] = battle_id
     dinossaur['position'] = board_position
     dinossaur_model = models.DinossaurSchema()
-    created_dinossaur = dinossaur_model.dumps(dinossaur)
+    created_dinossaur = dinossaur_model.load(dinossaur)
 
     return created_dinossaur.errors, created_dinossaur

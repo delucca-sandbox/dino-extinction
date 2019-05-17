@@ -29,8 +29,7 @@ def test_generate_dinossaur_model(mocked_redis):
     # given
     fake = Faker()
     fake.provider('address')
-    digits = [str(fake.random_int(min=1, max=9)) for _ in range(4)]
-    id = int(''.join(digits))
+    id = fake.random_int(min=1111, max=9999)
     position = [fake.random_int(min=1, max=9), fake.random_int(min=1, max=9)]
 
     state = [[None] * 9 for _ in range(9)]
@@ -50,7 +49,7 @@ def test_generate_dinossaur_model(mocked_redis):
 
     # when
     model = models.DinossaurSchema()
-    model.dumps(dinossaur)
+    model.load(dinossaur)
 
     # then
     called_id, raw_args = mocked_redis.instance.set.call_args_list[0][0]
@@ -99,7 +98,7 @@ def test_position_must_be_a_list():
     fake = Faker()
     fake.provider('python')
     dinossaur = dict()
-    dinossaur['battle_id'] = fake.random_int(min=1, max=9)
+    dinossaur['battle_id'] = fake.random_int(min=1111, max=9999)
     dinossaur['position'] = fake.word()
 
     # when
@@ -174,10 +173,8 @@ def test_raise_error_if_position_isnt_empty(mocked_redis):
     digits = [str(fake.random_int(min=1, max=9)) for _ in range(4)]
     id = int(''.join(digits))
     position = [fake.random_int(min=1, max=9), fake.random_int(min=1, max=9)]
-    print(position)
 
     state = [[None] * 9 for _ in range(10)]
-    print(state)
     state[position[0] - 1][position[1] - 1] = fake.word()
 
     board = dict()
@@ -195,7 +192,7 @@ def test_raise_error_if_position_isnt_empty(mocked_redis):
 
     # when
     model = models.DinossaurSchema()
-    result = model.dumps(dinossaur)
+    result = model.load(dinossaur)
 
     # then
     assert result.errors['_schema'][0] == 'This position is not empty'
@@ -241,8 +238,51 @@ def test_raise_error_if_position_is_out_of_range(mocked_redis):
 
     # when
     model = models.DinossaurSchema()
-    result = model.dumps(dinossaur)
+    result = model.load(dinossaur)
 
     # then
     assert result.errors['_schema'][0] == 'This position is out of range'
+    mocked_redis.instance.set.assert_not_called()
+
+
+@patch('dino_extinction.blueprints.dinossaurs.models.redis')
+def test_raise_error_if_position_misses_x_or_y(mocked_redis):
+    """Refuse positions X or Y is missing.
+
+    This test will try to create a new dinossaur with a missing position at X or Y
+    and it should not accept that.
+
+    Parameters
+    ----------
+    mocked_redis : magic mock
+        The mock of our Redis module.
+
+    """
+    # given
+    fake = Faker()
+    fake.provider('address')
+    id = fake.random_int(min=1111, max=9999)
+    position = [fake.random_int(min=1, max=9)]
+
+    state = [[None] * 9 for _ in range(9)]
+
+    board = dict()
+    board.setdefault('state', state)
+
+    battle = dict()
+    battle.setdefault('board', board)
+
+    pickled_battle = pickle.dumps(battle)
+    mocked_redis.instance.get.return_value = pickled_battle
+
+    dinossaur = dict()
+    dinossaur['battle_id'] = id
+    dinossaur['position'] = position
+
+    # when
+    model = models.DinossaurSchema()
+    result = model.load(dinossaur)
+
+    # then
+    assert result.errors['position'][0] == 'You must provide xPos and yPos'
     mocked_redis.instance.set.assert_not_called()

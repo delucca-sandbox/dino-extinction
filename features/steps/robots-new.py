@@ -30,8 +30,8 @@ def step_create_request(context):
     context.board_size = 50
 
     request = dict()
-    request.setdefault('battleId', context.faker.random_int(min=1, max=9))
-    request.setdefault('name', context.faker.word())
+    request.setdefault('battleId', context.faker.random_int(min=1111,
+                                                            max=9999))
     request.setdefault('xPosition', context.faker.random_int(min=1, max=9))
     request.setdefault('yPosition', context.faker.random_int(min=1, max=9))
     request.setdefault('direction', 'north')
@@ -58,7 +58,7 @@ def step_create_set_of_requests(context):
     context.board_size = 50
 
     def request_template(row):
-        fields = ['battleId', 'name', 'xPosition', 'yPosition', 'direction']
+        fields = ['battleId', 'xPosition', 'yPosition', 'direction']
 
         return {field: row[field] for field in fields}
 
@@ -86,12 +86,11 @@ def step_insert_robot_at_desired_position(context):
     for request in context.requests:
         data = dict()
         data.setdefault('battle_id', request.get('battleId'))
-        data.setdefault('name', context.faker.word())
         data.setdefault('direction', 'north')
         data.setdefault('position', (request.get('xPosition'),
                                      request.get('yPosition')))
 
-        model.dumps(data)
+        model.load(data)
 
 
 @when('we ask to create a new robot')
@@ -155,7 +154,6 @@ def step_check_if_robot_was_created(context):
         assert robot_id in entities
         assert entities[robot_id]['position'] == [xPos, yPos]
         assert entities[robot_id]['direction'] == request['direction']
-        assert robot_id == request['name']
 
 
 @then('the robot was not created')

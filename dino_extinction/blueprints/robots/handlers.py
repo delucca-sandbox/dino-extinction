@@ -4,6 +4,7 @@ This module contains all handlers that we are going to use in our
 Robots Module API. They will be used inside our routes.
 
 """
+from dino_extinction.blueprints.battles.models import BattleSchema
 from . import models
 
 
@@ -50,3 +51,48 @@ def new_robot(battle_id, direction, board_position):
     created_robot = robot_model.load(robot)
 
     return created_robot.errors, created_robot
+
+
+def command_robot(battle_id, robot_id, action):
+    """Command a specific robot.
+
+    This handler will command an specific robot, at a specific battle, to do
+    some given action. It must guarantee that the action is also valid and
+    return any errors if it is not.
+
+    ...
+
+    Parameters
+    ----------
+    battle_id : int
+        The ID of your current battle.
+
+    robot_id : string
+        The ID of the robot that will receive the action.
+
+    action: string
+        An action that can be: turn-left, turn-right, move-forward,
+        move-backwards or attack.
+
+    Returns
+    -------
+    errors : dict
+        A dict containing every error that happened during the robot
+        action (if any).
+
+    message : string
+        A message to the user about the action of that robot.
+
+    """
+    def _default_error(msg):
+        return msg, None
+
+    battle_model = BattleSchema()
+    battle_state_original = battle_model.get_battle(battle_id)
+    if not battle_state_original:
+        return _default_error('This battle does not exist')
+
+    entities = battle_state_original.get('entities')
+    selected_robot = entities.get(robot_id)
+    if not selected_robot:
+        return _default_error('This robot does not exist')

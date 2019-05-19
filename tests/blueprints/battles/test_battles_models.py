@@ -144,3 +144,105 @@ def test_create_new_battle(mocked_redis):
 
     assert mocked_redis.instance.set.call_count == 1
     mocked_redis.instance.set.assert_called_with(id, pickled_expected_battle)
+
+
+@patch('dino_extinction.blueprints.battles.models.redis')
+@patch('dino_extinction.blueprints.battles.models.pickle')
+def test_get_battle(mocked_pickle, mocked_redis):
+    """Get an existing battle.
+
+    This test will try to get an existing battle and it will pass if our model
+    returns that battle for us.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_redis : magic mock
+        The mock of our Redis module.
+
+    mocked_pickle: magic mock
+        The mock of the Pickle library.
+
+    """
+    # given
+    fake = Faker()
+    battle_id = fake.word()
+    expected_return = fake.word()
+    mocked_redis.instance.get.return_value = expected_return
+    mocked_pickle.loads.return_value = expected_return
+
+    # when
+    model = models.BattleSchema()
+    result = model.get_battle(battle_id)
+
+    # then
+    assert result == expected_return
+    assert mocked_redis.instance.get.call_count == 1
+    mocked_redis.instance.get.assert_called_with(battle_id)
+
+
+@patch('dino_extinction.blueprints.battles.models.redis')
+def test_not_get_unknow_battle(mocked_redis):
+    """Ignore an unknow battle.
+
+    This test will try to get an unknow battle and it should pass if the
+    result to that was None.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_redis : magic mock
+        The mock of our Redis module.
+
+    """
+    # given
+    fake = Faker()
+    mocked_redis.instance.get.return_value = None
+
+    # when
+    model = models.BattleSchema()
+    result = model.get_battle(fake.word())
+
+    # then
+    assert not result
+    assert mocked_redis.instance.get.call_count == 1
+
+
+@patch('dino_extinction.blueprints.battles.models.redis')
+@patch('dino_extinction.blueprints.battles.models.pickle')
+def test_get_battle_serializing_pickle_data(mocked_pickle, mocked_redis):
+    """Normalize battle data.
+
+    This test will try to get an existing battle and it should pass if it
+    send the right data to pickle and return to us the loaded pickle data.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_redis : magic mock
+        The mock of our Redis module.
+
+    mocked_pickle: magic mock
+        The mock of the Pickle library.
+
+    """
+    # given
+    fake = Faker()
+    battle_id = fake.word()
+    raw_data = fake.word()
+    expected_return = fake.word()
+    mocked_redis.instance.get.return_value = raw_data
+    mocked_pickle.loads.return_value = expected_return
+
+    # when
+    model = models.BattleSchema()
+    result = model.get_battle(battle_id)
+
+    # then
+    assert result == expected_return
+    assert result != raw_data
+    assert mocked_pickle.loads.call_count == 1
+    mocked_pickle.loads.assert_called_with(raw_data)

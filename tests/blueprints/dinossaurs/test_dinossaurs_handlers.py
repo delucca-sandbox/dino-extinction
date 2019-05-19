@@ -11,7 +11,7 @@ from dino_extinction.blueprints.dinossaurs import handlers
 
 @patch('dino_extinction.blueprints.dinossaurs.handlers.models')
 def test_called_model(mocked_models):
-    """Test the calling of our model.
+    """Call our model.
 
     This test will ensure that our handler is calling our model during the
     creation of a new dinossaur.

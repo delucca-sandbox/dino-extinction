@@ -48,19 +48,26 @@ def set_routes(bp, handlers):
 
     @bp.route('/command', methods=['POST'])
     def route_command():
+        mimetype = 'application/json'
+        status = dict()
+        status.setdefault('error', 500)
+        status.setdefault('success', 200)
+
         battle_id = request.values.get('battleId')
         robot_id = request.values.get('robot')
         action = request.values.get('action')
 
-        print(action)
+        robot_pattern = 'R-'
+        if robot_id[:2] != robot_pattern:
+            return Response(False,
+                            status=status.get('error'),
+                            mimetype=mimetype)
 
-        errors, _ = handlers.new_robot(battle_id=battle_id,
-                                       direction=direction,
-                                       board_position=board_position)
-        parsed = json.dumps(False if errors else 'Robot created')
-        print(errors)
-        status = 500 if errors else 200
-        mimetype = 'application/json'
+        errors, _ = handlers.command_robot(battle_id=battle_id,
+                                           robot_id=robot_id,
+                                           action=action)
+        parsed = json.dumps(False if errors else 'Robot commanded')
+        status = status.get('error') if errors else status.get('success')
 
         return Response(parsed,
                         status=status,

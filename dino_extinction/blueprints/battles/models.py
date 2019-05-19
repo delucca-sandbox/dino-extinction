@@ -78,3 +78,29 @@ class BattleSchema(Schema):
         battle['board'] = board
         pickled_battle = pickle.dumps(battle)
         redis.instance.set(data['id'], pickled_battle)
+
+
+    def get_battle(self, battle_id):
+        """Get the data from an existing battle.
+
+        This method will get the data from an existing battle, return it data
+        normalized or None if the data does not exist.
+
+        ...
+
+        Parameters
+        ----------
+        battle_id : str
+            The ID of the battle that you are trying to get.
+
+        Returns
+        -------
+        battle : dict
+            The data of the desired battle (if exists) normalized as a
+            Python dict. If there is no battle, it should return None.
+
+        """
+        raw_data = redis.instance.get(battle_id)
+        data = pickle.loads(raw_data)
+
+        return data

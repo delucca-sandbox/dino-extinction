@@ -29,8 +29,8 @@ Feature: command an existing robot
        And the dinossaur was destroyed
 
   Examples: Messages
-    | message     |
-    | Robot moved |
+    | message         |
+    | Robot commanded |
 
   Scenario: must provide all required params
       Given a set of new robot commands
@@ -58,9 +58,9 @@ Feature: command an existing robot
       And the battle state is the same
 
  Examples: Scenarios
-   | command        | message     |
-   | move-forward   | Robot moved |
-   | move-backwards | Robot moved |
+   | command        | message         |
+   | move-forward   | Robot commanded |
+   | move-backwards | Robot commanded |
 
 Scenario: should not move the robot outside of battle area
     Given a set of new robot commands

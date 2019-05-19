@@ -104,6 +104,9 @@ class BattleSchema(Schema):
 
         """
         raw_data = redis.instance.get(battle_id)
+        if not raw_data:
+            return None
+
         data = pickle.loads(raw_data)
 
         return data

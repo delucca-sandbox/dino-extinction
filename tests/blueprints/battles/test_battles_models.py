@@ -185,7 +185,8 @@ def test_get_battle(mocked_pickle, mocked_redis):
 
 
 @patch('dino_extinction.blueprints.battles.models.redis')
-def test_not_get_unknow_battle(mocked_redis):
+@patch('dino_extinction.blueprints.battles.models.pickle')
+def test_not_get_unknow_battle(mocked_pickle, mocked_redis):
     """Ignore an unknow battle.
 
     This test will try to get an unknow battle and it should pass if the
@@ -195,6 +196,9 @@ def test_not_get_unknow_battle(mocked_redis):
 
     Parameters
     ----------
+    mocked_pickle: magic mock
+        The mock of the Pickle library.
+
     mocked_redis : magic mock
         The mock of our Redis module.
 
@@ -208,6 +212,8 @@ def test_not_get_unknow_battle(mocked_redis):
     result = model.get_battle(fake.word())
 
     # then
+    mocked_pickle.loads.assert_not_called()
+
     assert not result
     assert mocked_redis.instance.get.call_count == 1
 

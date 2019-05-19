@@ -6,6 +6,7 @@ battles blueprint models.
 """
 import pickle
 
+from copy import deepcopy
 from marshmallow import (Schema, fields, validates, post_dump, ValidationError)
 from dino_extinction.infrastructure import redis
 
@@ -39,7 +40,8 @@ class BattleSchema(Schema):
 
         ...
 
-        Raises
+        Raises        print(original_position)
+
         ------
         ValidationError
             If the number of digits of the ID is different than 4.
@@ -69,6 +71,7 @@ class BattleSchema(Schema):
         """
         board_size = data['board_size']
         board_state = [[None] * board_size for _ in range(board_size)]
+
 
         board = dict()
         board['size'] = board_size
@@ -126,3 +129,86 @@ class BattleSchema(Schema):
         redis.set(battle_id, raw_data)
 
         return True
+
+    def move_robot(self, battle, robot_id, action):
+        """Move the robot inside the battlefield.
+
+        This method will move the desired robot inside the battlefield
+        according to an specific action. It will not move if any other entity
+        has already taken that position.
+
+        ...
+
+        Parameters
+        ----------
+        battle : dict
+            The battle object that you are working on.
+
+        robot_id : str
+            The ID of the robot that you are trying to move.
+
+        action : str
+            The action that you are trying to do. It can be? move-forward or
+            move-backwards.
+
+        """
+        cardinal_points = dict()
+        cardinal_points.setdefault('north', 0)
+        cardinal_points.setdefault('south', 0)
+        cardinal_points.setdefault('west', 1)
+        cardinal_points.setdefault('east', 1)
+
+        reversed_directions = dict()
+        reversed_directions.setdefault('north', False)
+        reversed_directions.setdefault('east', False)
+        reversed_directions.setdefault('south', True)
+        reversed_directions.setdefault('west', True)
+
+        robot = battle.get('entities').get(robot_id)
+        facing_direction = robot.get('direction')
+        cardinal_point = cardinal_points.get(facing_direction)
+        is_reversed = reversed_directions.get(facing_direction)
+
+        original_position = robot.get('position')
+        original_state = battle.get('state')
+
+        position_to_change = original_position[cardinal_point]
+        updated_battle = deepcopy(battle)
+        new_state = deepcopy(original_state)
+        changed_position = self._calculate_position(position_to_change,
+                                                    action,
+                                                    is_reversed)
+
+        new_robot_position = [pos for pos in original_position]
+        new_robot_position[cardinal_point] = changed_position
+        new_robot_position = tuple(new_robot_position)
+
+        old_yPos = original_position[0]
+        old_xPos = original_position[1]
+        new_yPos = new_robot_position[0]
+        new_xPos = new_robot_position[1]
+
+        if battle.get('state')[new_yPos][new_xPos]:
+            return False
+        
+        updated_battle.get('state')[old_yPos][old_xPos] = None
+        updated_battle.get('state')[new_yPos][new_xPos] = robot_id
+
+        new_position = dict()
+        new_position.setdefault('position', new_robot_position)
+        updated_battle.get('entities').get(robot_id).update(new_position)
+
+        return updated_battle
+
+    def _calculate_position(self, pos, act, rev):
+        def move_forward(x, rev):
+            return x + 1 if not rev else x - 1
+
+        def move_backwards(x, rev):
+            return x - 1 if not rev else x + 1
+
+        dispatch = dict()
+        dispatch.setdefault('move-forward', move_forward)
+        dispatch.setdefault('move-backwards', move_backwards)
+
+        return dispatch.get(act)(pos, rev)

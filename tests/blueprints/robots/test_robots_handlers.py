@@ -6,6 +6,7 @@ blueprint handlers are working as we are expecting.
 """
 import random
 
+from copy import deepcopy
 from mock import (patch, MagicMock)
 from faker import Faker
 from dino_extinction.blueprints.robots import handlers
@@ -201,9 +202,52 @@ def test_robot_update_direction(mocked_battle_schema, mocked_robot_schema):
     assert not errors
     assert result
 
-# For move actions, it should check if the action is valid and move if so
 
-# If the move action is invalid (anything else is there), it should return an error
+@patch('dino_extinction.blueprints.robots.handlers.BattleSchema')
+def test_robot_move(mocked_battle_schema):
+    """Move the robot to a new spot.
+
+    This test will ensure that if we ask to move the robot it will do so. It
+    should pass if the robot can go forwards and backwards.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_battle_models : magic mock
+        The mock of the models from our battles service.
+
+    """
+    # given
+    fake = Faker()
+    battle_id = fake.word()
+    robot_id = fake.word()
+    moved_battle = fake.word()
+    options = ['move-forward', 'move-backwards']
+    action = random.choice(options)
+
+    entities = dict()
+    entities.setdefault(robot_id, fake.word())
+
+    original_battle = dict()
+    original_battle.setdefault('entities', entities)
+
+    mocked_battle_models = MagicMock()
+    mocked_battle_models.get_battle.return_value = original_battle
+    mocked_battle_models.move_robot.return_value = moved_battle
+    mocked_battle_schema.return_value = mocked_battle_models
+
+    # when
+    errors, result = handlers.command_robot(battle_id, robot_id, action)
+
+    # then
+    mocked_battle_models.move_robot.assert_called_once_with(original_battle,
+                                                            robot_id,
+                                                            action)
+    mocked_battle_models.update_battle.assert_called_once_with(battle_id,
+                                                               moved_battle)
+    assert not errors
+    assert result
 
 # For attack actions, it should remove all dinossaurs close to it
 

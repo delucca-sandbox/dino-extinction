@@ -100,8 +100,8 @@ def command_robot(battle_id, robot_id, action):
     if not selected_robot:
         return _default_error('This robot does not exist')
 
-    robot_model = RobotSchema()
     if action in constants.ACTIONS_TURNED:
+        robot_model = RobotSchema()
         previous_direction = selected_robot.get('direction')
         new_robot_direction = robot_model.change_direction(previous_direction,
                                                            action)
@@ -111,6 +111,13 @@ def command_robot(battle_id, robot_id, action):
         new_direction = dict()
         new_direction.setdefault('direction', new_robot_direction)
         robot.update(new_direction)
+        battle_model.update_battle(battle_id, new_battle_state)
+
+    if action in constants.ACTIONS_MOVED:
+        new_battle_state = battle_model.move_robot(battle_state_original,
+                                                   robot_id,
+                                                   action)
+
         battle_model.update_battle(battle_id, new_battle_state)
 
     return None, 'Robot commanded'

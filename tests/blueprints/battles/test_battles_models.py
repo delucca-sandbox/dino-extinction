@@ -5,9 +5,11 @@ blueprint models are working as we are expecting.
 
 """
 import pickle
+import random
 
 from faker import Faker
 from mock import patch
+from copy import deepcopy
 from dino_extinction.blueprints.battles import models
 
 
@@ -276,3 +278,98 @@ def test_update_battle(mocked_redis):
     # then
     assert mocked_redis.set.call_count == 1
     mocked_redis.set.assert_called_with(battle_id, new_raw_data)
+
+
+def test_move_robot():
+    """Move a robot inside the battlefield.
+
+    This test will try to move a robot in the battlefield. It should pass if
+    it returns the robot moved according to the action, changing it's position
+    on the battlefield and also it's position inside the entities.
+
+    """
+    def _find_new_robot_spot(action):
+        return (4, 3) if action == 'move-forward' else (2, 3)
+
+    # given
+    fake = Faker()
+    robot_id = fake.word()
+    options = ['move-forward', 'move-backwards']
+    action = random.choice(options)
+    default_size = 9
+    default_board = [[None] * default_size for _ in range(default_size)]
+
+    robot = dict()
+    robot.setdefault('direction', 'north')
+    robot.setdefault('position', (3, 3))
+    board_with_robot = deepcopy(default_board)
+    board_with_robot[3][3] = robot_id
+
+    entities = dict()
+    entities.setdefault(robot_id, robot)
+
+    battle = dict()
+    battle.setdefault('entities', entities)
+    battle.setdefault('size', default_size)
+    battle.setdefault('state', board_with_robot)
+
+    # when
+    model = models.BattleSchema()
+    result = model.move_robot(battle, robot_id, action)
+
+    # then
+    moved_battle = deepcopy(battle)
+    new_robot_position = _find_new_robot_spot(action)
+    board_with_moved_robot = deepcopy(default_board)
+    board_with_moved_robot[new_robot_position[0]][new_robot_position[1]] = \
+        robot_id
+
+    moved_state = dict()
+    moved_state.setdefault('state', board_with_moved_robot)
+
+    moved_robot = dict()
+    moved_robot.setdefault('position', new_robot_position)
+
+    moved_battle.update(moved_state)
+    moved_battle.get('entities').get(robot_id).update(moved_robot)
+
+    assert result == moved_battle
+
+
+def test_move_robot_in_a_taken_spot():
+    """Move a robot inside the battlefield in a taken spot.
+
+    This test will try to move a robot in the battlefield. It should pass if
+    it returns false because there will already be another entity at that
+    place.
+
+    """
+    # given
+    fake = Faker()
+    robot_id = fake.word()
+    options = ['move-forward', 'move-backwards']
+    action = random.choice(options)
+    default_size = 9
+    default_board = [[None] * default_size for _ in range(default_size)]
+
+    robot = dict()
+    robot.setdefault('direction', 'north')
+    robot.setdefault('position', (3, 3))
+    board_with_robot = deepcopy(default_board)
+    board_with_robot[3][3] = robot_id
+    board_with_robot[4 if action == 'move-forward' else 2][3] = fake.word()
+
+    entities = dict()
+    entities.setdefault(robot_id, robot)
+
+    battle = dict()
+    battle.setdefault('entities', entities)
+    battle.setdefault('size', default_size)
+    battle.setdefault('state', board_with_robot)
+
+    # when
+    model = models.BattleSchema()
+    result = model.move_robot(battle, robot_id, action)
+
+    # then
+    assert not result

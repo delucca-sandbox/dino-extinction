@@ -5,9 +5,10 @@ Beware to build them in a way that multiple features could use them.
 
 """
 import json
+import pickle
 
 from faker import Faker
-from behave import (given, when, then)
+from behave import (given, then)
 from dino_extinction.blueprints.battles.models import BattleSchema
 from dino_extinction.infrastructure import redis
 
@@ -69,7 +70,35 @@ def step_create_new_battle(context):
 
 
 @given('an non-existing battle')
-def step_create_new_non_existing_battle(context):
+def step_create_new_non_existing_batt
+
+
+@then('the dinossaur was not created')
+def step_check_if_the_dino_was_not_created(context):
+    """Check if no dino exists.
+
+    This step will check if we didn't have created any dino in our
+    current battle.
+
+    ...
+
+    Parameters
+    ----------
+    context : behave context
+        The behave context that is being used in this feature test.
+
+    """
+    for request in context.requests:
+        battle_id = request['battleId']
+        if not battle_id:
+            continue
+
+        snapshot = pickle.loads(context.snapshots[battle_id])
+
+        raw_battle = redis.instance.get(battle_id)
+        battle = pickle.loads(raw_battle)
+
+        assert battle == snapshotle(context):
     """Create an untracked battle.
 
     This step will create a battle on our Redis using an untracked battleId
@@ -163,3 +192,30 @@ def step_check_received_an_error(context):
 
         assert response.status_code == 500
         assert not data
+
+
+@then('the battle state is the same')
+def step_check_if_nothing_happened(context):
+    """Check if nothing happens.
+
+    This step will check that nothing has happened on our battle and it
+    state is still the same.
+
+    ...
+
+    Parameters
+    ----------
+    context : behave context
+        The behave context that is being used in this feature test.
+
+    """
+    for request in context.requests:
+        battle_id = request['battleId']
+        assert battle_id
+
+        snapshot = pickle.loads(context.snapshots[battle_id])
+
+        raw_battle = redis.instance.get(battle_id)
+        battle = pickle.loads(raw_battle)
+
+        assert battle == snapshot

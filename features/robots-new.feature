@@ -24,7 +24,7 @@ Feature: create a new robot
         And a snapshot of all battles
        When we ask to create a new robot
        Then we receive an error
-        And the robot was not created
+        And the battle state is the same
 
   Scenario: must provide an valid battleId
      Given a fake data provider
@@ -42,7 +42,7 @@ Feature: create a new robot
       And a snapshot of all battles
      When we ask to create a new robot
      Then we receive an error
-      And the dinossaur was not created
+      And the battle state is the same
 
 Scenario: should not accept a robot outside of battle area
    Given a set of new dinossaur requests
@@ -54,7 +54,7 @@ Scenario: should not accept a robot outside of battle area
      And a snapshot of all battles
     When we ask to create a new robot
     Then we receive an error
-     And the robot was not created
+     And the battle state is the same
 
 Scenario Outline: should be able to insert multiple dinossaurs
    Given a set of new robot requests

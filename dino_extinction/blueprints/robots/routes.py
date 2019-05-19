@@ -29,11 +29,30 @@ def set_routes(bp, handlers):
 
     """
     @bp.route('/new', methods=['POST'])
-    def index():
+    def route_new():
         battle_id = request.values.get('battleId')
         direction = request.values.get('direction')
         board_position = (request.values.get('yPosition'),
                           request.values.get('xPosition'))
+
+        errors, _ = handlers.new_robot(battle_id=battle_id,
+                                       direction=direction,
+                                       board_position=board_position)
+        parsed = json.dumps(False if errors else 'Robot created')
+        status = 500 if errors else 200
+        mimetype = 'application/json'
+
+        return Response(parsed,
+                        status=status,
+                        mimetype=mimetype)
+
+    @bp.route('/command', methods=['POST'])
+    def route_command():
+        battle_id = request.values.get('battleId')
+        robot_id = request.values.get('robot')
+        action = request.values.get('action')
+
+        print(action)
 
         errors, _ = handlers.new_robot(battle_id=battle_id,
                                        direction=direction,

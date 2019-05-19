@@ -70,35 +70,7 @@ def step_create_new_battle(context):
 
 
 @given('an non-existing battle')
-def step_create_new_non_existing_batt
-
-
-@then('the dinossaur was not created')
-def step_check_if_the_dino_was_not_created(context):
-    """Check if no dino exists.
-
-    This step will check if we didn't have created any dino in our
-    current battle.
-
-    ...
-
-    Parameters
-    ----------
-    context : behave context
-        The behave context that is being used in this feature test.
-
-    """
-    for request in context.requests:
-        battle_id = request['battleId']
-        if not battle_id:
-            continue
-
-        snapshot = pickle.loads(context.snapshots[battle_id])
-
-        raw_battle = redis.instance.get(battle_id)
-        battle = pickle.loads(raw_battle)
-
-        assert battle == snapshotle(context):
+def step_create_new_non_existing_battle(context):
     """Create an untracked battle.
 
     This step will create a battle on our Redis using an untracked battleId

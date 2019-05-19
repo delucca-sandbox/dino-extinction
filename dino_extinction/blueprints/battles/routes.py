@@ -29,7 +29,7 @@ def set_routes(bp, handlers):
 
     """
     @bp.route('/new', methods=['POST'])
-    def index():
+    def route_new():
         board_size = request.values.get('size') or 50
         errors, battle = handlers.new_battle(board_size=board_size)
         parsed = json.dumps(False if errors else battle)

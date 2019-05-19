@@ -29,7 +29,7 @@ def set_routes(bp, handlers):
 
     """
     @bp.route('/new', methods=['POST'])
-    def index():
+    def route_new():
         battle_id = request.values.get('battleId')
         board_position = (request.values.get('xPosition'),
                           request.values.get('yPosition'))

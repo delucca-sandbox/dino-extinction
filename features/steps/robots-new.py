@@ -1,7 +1,7 @@
-"""Robots Steps.
+"""Robots New Steps.
 
-This module contains every step to test the behaviour of our Robots
-services.
+This module contains every step to test the behaviour of our New endpoint
+of our Robots service.
 
 """
 import pickle
@@ -87,8 +87,8 @@ def step_insert_robot_at_desired_position(context):
         data = dict()
         data.setdefault('battle_id', request.get('battleId'))
         data.setdefault('direction', 'north')
-        data.setdefault('position', (request.get('xPosition'),
-                                     request.get('yPosition')))
+        data.setdefault('position', (request.get('yPosition'),
+                                     request.get('xPosition')))
 
         model.load(data)
 
@@ -152,7 +152,7 @@ def step_check_if_robot_was_created(context):
         robot_id = board[xPos - 1][yPos - 1]
 
         assert robot_id in entities
-        assert entities[robot_id]['position'] == [xPos, yPos]
+        assert entities[robot_id]['position'] == [yPos, xPos]
         assert entities[robot_id]['direction'] == request['direction']
 
 

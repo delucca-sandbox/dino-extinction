@@ -50,6 +50,9 @@ def step_create_new_battle(context):
         The behave context that is being used in this feature test.
 
     """
+    if not hasattr(context, 'board_size'):
+        context.board_size = 50
+
     for request in context.requests:
         battle_id = request['battleId']
         if not battle_id:
@@ -129,6 +132,9 @@ def step_check_requests_status(context, message):
     ----------
     context : behave context
         The behave context that is being used in this feature test.
+
+    message : string
+        The message that we want to receive from our server.
 
     """
     for response in context.responses:

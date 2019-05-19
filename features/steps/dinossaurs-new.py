@@ -1,7 +1,7 @@
 """Dinossaurs Steps.
 
-This module contains every step to test the behaviour of our Dinossaurs
-services.
+This module contains every step to test the behaviour of our New endpoint
+of our Dinossaurs services.
 
 """
 import pickle

@@ -1,7 +1,7 @@
 """Battles Steps.
 
-This module contains every step to test the behaviour of our Battles
-services.
+This module contains every step to test the behaviour of our New endpoint
+of our Battles services.
 
 """
 import pickle

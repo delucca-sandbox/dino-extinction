@@ -9,7 +9,7 @@ Feature: create a new robot
        And the robot was created
 
   Examples: Messages
-    |  message      |
+    | message       |
     | Robot created |
 
   Scenario: must provide all required params
@@ -68,5 +68,5 @@ Scenario Outline: should be able to insert multiple dinossaurs
      And the robot was created
 
 Examples: Messages
-  |  message      |
+  | message       |
   | Robot created |

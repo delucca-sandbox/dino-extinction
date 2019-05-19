@@ -54,7 +54,7 @@ $ POST http://localhost/robots/command
 **Parameters:**
 * **battleId**: The id of your current battle `REQUIRED`
 * **robot**: The name of the robot that you're commanding `REQUIRED`
-* **action**: The action you want it to do. It can be: **move-north**, **move-east**, **move-south**, **move-west** or **attack** `REQUIRED`
+* **action**: The action you want it to do. It can be: **turn-left**, **turn-right**, **move-forward**, **move-backwards** or **attack** `REQUIRED`
 
 **IMPORTANT:** You cannot move your robot outside of the battle
 

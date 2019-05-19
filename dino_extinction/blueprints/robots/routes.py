@@ -32,8 +32,8 @@ def set_routes(bp, handlers):
     def index():
         battle_id = request.values.get('battleId')
         direction = request.values.get('direction')
-        board_position = (request.values.get('xPosition'),
-                          request.values.get('yPosition'))
+        board_position = (request.values.get('yPosition'),
+                          request.values.get('xPosition'))
 
         errors, _ = handlers.new_robot(battle_id=battle_id,
                                        direction=direction,

@@ -130,7 +130,7 @@ class BattleSchema(Schema):
 
         return True
 
-    def move_robot(self, battle, robot_id, action):
+    def robot_move(self, battle, robot_id, action):
         """Move the robot inside the battlefield.
 
         This method will move the desired robot inside the battlefield
@@ -170,11 +170,8 @@ class BattleSchema(Schema):
         is_reversed = reversed_directions.get(facing_direction)
 
         original_position = robot.get('position')
-        original_state = battle.get('state')
-
         position_to_change = original_position[cardinal_point]
         updated_battle = deepcopy(battle)
-        new_state = deepcopy(original_state)
         changed_position = self._calculate_position(position_to_change,
                                                     action,
                                                     is_reversed)
@@ -190,7 +187,7 @@ class BattleSchema(Schema):
 
         if battle.get('state')[new_yPos][new_xPos]:
             return False
-        
+
         updated_battle.get('state')[old_yPos][old_xPos] = None
         updated_battle.get('state')[new_yPos][new_xPos] = robot_id
 
@@ -199,6 +196,48 @@ class BattleSchema(Schema):
         updated_battle.get('entities').get(robot_id).update(new_position)
 
         return updated_battle
+
+    def robot_attack(self, battle, robot_id):
+        """Attack all dinos close to an specific robot
+
+        This method will destroy all dinos close to an specific robot. It will
+        not attack any other robot close to it.
+
+        ...
+
+        Parameters
+        ----------
+        battle : dict
+            The battle object that you are working on.
+
+        robot_id : str
+            The ID of the robot that you are trying to move.
+
+        """
+        robot = battle.get('entities').get(robot_id)
+        robot_position = robot.get('position')
+        entities = battle.get('entities')
+
+        robot_yPos = robot_position[0]
+        robot_xPos = robot_position[1]
+        yPositions = [robot_yPos + 1, robot_yPos - 1]
+        xPositions = [robot_xPos + 1, robot_xPos - 1]
+
+        corners = [(x, y) for x in xPositions for y in yPositions]
+        same_ver_axis = [(x, y) for x in robot_position for y in yPositions]
+        same_hor_axis = [(x, y) for x in xPositions for y in robot_position]
+        positions_to_attack = list(set().union(corners,
+                                               same_ver_axis,
+                                               same_hor_axis))
+
+        for yPos, xPos in positions_to_attack:
+            entity = battle.get('state')[yPos][xPos]
+
+            if entity and entity[:2] == 'D-':
+                del entities[entity]
+                battle.get('state')[yPos][xPos] = None
+
+        return battle
 
     def _calculate_position(self, pos, act, rev):
         def move_forward(x, rev):

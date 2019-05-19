@@ -234,14 +234,14 @@ def test_robot_move(mocked_battle_schema):
 
     mocked_battle_models = MagicMock()
     mocked_battle_models.get_battle.return_value = original_battle
-    mocked_battle_models.move_robot.return_value = moved_battle
+    mocked_battle_models.robot_move.return_value = moved_battle
     mocked_battle_schema.return_value = mocked_battle_models
 
     # when
     errors, result = handlers.command_robot(battle_id, robot_id, action)
 
     # then
-    mocked_battle_models.move_robot.assert_called_once_with(original_battle,
+    mocked_battle_models.robot_move.assert_called_once_with(original_battle,
                                                             robot_id,
                                                             action)
     mocked_battle_models.update_battle.assert_called_once_with(battle_id,
@@ -249,8 +249,48 @@ def test_robot_move(mocked_battle_schema):
     assert not errors
     assert result
 
+
 # For attack actions, it should remove all dinossaurs close to it
+@patch('dino_extinction.blueprints.robots.handlers.BattleSchema')
+def test_robot_attack(mocked_battle_schema):
+    """Attack with a robot.
 
-# In attack actions, it should not remove any robot (maybe this should be a feature test too)
+    This test will ensure that our handle can trigger the attack with an
+    specific robot when it is asked to do so.
 
-# Should update the battle state in the end
+    ...
+
+    Parameters
+    ----------
+    mocked_battle_models : magic mock
+        The mock of the models from our battles service.
+
+    """
+    # given
+    fake = Faker()
+    battle_id = fake.word()
+    robot_id = fake.word()
+    attacked_battle = fake.word()
+    action = 'attack'
+
+    entities = dict()
+    entities.setdefault(robot_id, fake.word())
+
+    original_battle = dict()
+    original_battle.setdefault('entities', entities)
+
+    mocked_battle_models = MagicMock()
+    mocked_battle_models.get_battle.return_value = original_battle
+    mocked_battle_models.robot_attack.return_value = attacked_battle
+    mocked_battle_schema.return_value = mocked_battle_models
+
+    # when
+    errors, result = handlers.command_robot(battle_id, robot_id, action)
+
+    # then
+    mocked_battle_models.robot_attack.assert_called_once_with(original_battle,
+                                                              robot_id)
+    mocked_battle_models.update_battle.assert_called_once_with(battle_id,
+                                                               attacked_battle)
+    assert not errors
+    assert result

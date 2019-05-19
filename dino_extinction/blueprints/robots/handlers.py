@@ -114,9 +114,15 @@ def command_robot(battle_id, robot_id, action):
         battle_model.update_battle(battle_id, new_battle_state)
 
     if action in constants.ACTIONS_MOVED:
-        new_battle_state = battle_model.move_robot(battle_state_original,
+        new_battle_state = battle_model.robot_move(battle_state_original,
                                                    robot_id,
                                                    action)
+
+        battle_model.update_battle(battle_id, new_battle_state)
+
+    if action == 'attack':
+        new_battle_state = battle_model.robot_attack(battle_state_original,
+                                                     robot_id)
 
         battle_model.update_battle(battle_id, new_battle_state)
 

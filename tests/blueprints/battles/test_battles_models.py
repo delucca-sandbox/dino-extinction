@@ -280,7 +280,7 @@ def test_update_battle(mocked_redis):
     mocked_redis.set.assert_called_with(battle_id, new_raw_data)
 
 
-def test_move_robot():
+def test_robot_move():
     """Move a robot inside the battlefield.
 
     This test will try to move a robot in the battlefield. It should pass if
@@ -315,7 +315,7 @@ def test_move_robot():
 
     # when
     model = models.BattleSchema()
-    result = model.move_robot(battle, robot_id, action)
+    result = model.robot_move(battle, robot_id, action)
 
     # then
     moved_battle = deepcopy(battle)
@@ -336,7 +336,7 @@ def test_move_robot():
     assert result == moved_battle
 
 
-def test_move_robot_in_a_taken_spot():
+def test_robot_move_in_a_taken_spot():
     """Move a robot inside the battlefield in a taken spot.
 
     This test will try to move a robot in the battlefield. It should pass if
@@ -369,7 +369,101 @@ def test_move_robot_in_a_taken_spot():
 
     # when
     model = models.BattleSchema()
-    result = model.move_robot(battle, robot_id, action)
+    result = model.robot_move(battle, robot_id, action)
 
     # then
     assert not result
+
+
+def test_robot_attack():
+    """Attack with an robot and destroy all dinossaurs close to it.
+
+    This test will try to attack with a robot and it will pass if we can do so
+    and it destroys all dinossaurs close to that robot.
+
+    """
+    # given
+    fake = Faker()
+    robot_id = fake.word()
+    default_size = 9
+    default_board = [[None] * default_size for _ in range(default_size)]
+    default_dino = dict()
+    default_dino.setdefault(fake.word(), fake.word())
+
+    robot = dict()
+    robot.setdefault('direction', 'north')
+    robot.setdefault('position', (3, 3))
+    board_with_robot_and_dinos = deepcopy(default_board)
+    board_with_robot_and_dinos[3][3] = robot_id
+    board_with_robot_and_dinos[4][3] = 'D-1111'
+    board_with_robot_and_dinos[4][4] = 'D-2222'
+
+    entities = dict()
+    entities.setdefault(robot_id, robot)
+    entities.setdefault('D-1111', default_dino)
+    entities.setdefault('D-2222', default_dino)
+
+    battle = dict()
+    battle.setdefault('entities', entities)
+    battle.setdefault('size', default_size)
+    battle.setdefault('state', board_with_robot_and_dinos)
+
+    # when
+    model = models.BattleSchema()
+    result = model.robot_attack(battle, robot_id)
+
+    # then
+    board_with_robot = deepcopy(default_board)
+    board_with_robot[3][3] = robot_id
+
+    attacked_entities = dict()
+    attacked_entities.setdefault(robot_id, robot)
+
+    attacked_battle = dict()
+    attacked_battle.setdefault('entities', attacked_entities)
+    attacked_battle.setdefault('size', default_size)
+    attacked_battle.setdefault('state', board_with_robot)
+
+    assert result == attacked_battle
+    assert 'D-1111' not in result.get('entities')
+    assert 'D-2222' not in result.get('entities')
+
+
+def test_avoid_friendly_fire():
+    """Attack with an robot will not destroy other robots.
+
+    This test will try to attack with a robot and it will test if we will
+    not destry any friends.
+
+    """
+    # given
+    fake = Faker()
+    robot_id = fake.word()
+    default_size = 9
+    default_board = [[None] * default_size for _ in range(default_size)]
+    default_robot = dict()
+    default_robot.setdefault(fake.word(), fake.word())
+
+    robot = dict()
+    robot.setdefault('direction', 'north')
+    robot.setdefault('position', (3, 3))
+    board_with_robot_and_dinos = deepcopy(default_board)
+    board_with_robot_and_dinos[3][3] = robot_id
+    board_with_robot_and_dinos[4][3] = 'R-1111'
+
+    entities = dict()
+    entities.setdefault(robot_id, robot)
+    entities.setdefault('R-1111', default_robot)
+
+    battle = dict()
+    battle.setdefault('entities', entities)
+    battle.setdefault('size', default_size)
+    battle.setdefault('state', board_with_robot_and_dinos)
+
+    # when
+    model = models.BattleSchema()
+    result = model.robot_attack(battle, robot_id)
+
+    # then
+    assert result == battle
+    assert 'R-1111' in result.get('entities')

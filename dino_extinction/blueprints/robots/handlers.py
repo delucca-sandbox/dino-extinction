@@ -4,8 +4,11 @@ This module contains all handlers that we are going to use in our
 Robots Module API. They will be used inside our routes.
 
 """
+from copy import deepcopy
 from dino_extinction.blueprints.battles.models import BattleSchema
+from dino_extinction.blueprints.robots.models import RobotSchema
 from . import models
+from . import constants
 
 
 def new_robot(battle_id, direction, board_position):
@@ -96,3 +99,18 @@ def command_robot(battle_id, robot_id, action):
     selected_robot = entities.get(robot_id)
     if not selected_robot:
         return _default_error('This robot does not exist')
+
+    robot_model = RobotSchema()
+    if action in constants.ACTIONS_TURNED:
+        previous_direction = selected_robot.get('direction')
+        new_robot_direction = robot_model.change_direction(previous_direction,
+                                                           action)
+        new_battle_state = deepcopy(battle_state_original)
+        robot = new_battle_state.get('entities').get(robot_id)
+
+        new_direction = dict()
+        new_direction.setdefault('direction', new_robot_direction)
+        robot.update(new_direction)
+        battle_model.update_battle(battle_id, new_battle_state)
+
+    return None, 'Robot commanded'

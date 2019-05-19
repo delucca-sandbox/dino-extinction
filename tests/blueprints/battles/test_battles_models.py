@@ -158,11 +158,11 @@ def test_get_battle(mocked_pickle, mocked_redis):
 
     Parameters
     ----------
-    mocked_redis : magic mock
-        The mock of our Redis module.
-
     mocked_pickle: magic mock
         The mock of the Pickle library.
+
+    mocked_redis : magic mock
+        The mock of our Redis module.
 
     """
     # given
@@ -222,11 +222,11 @@ def test_get_battle_serializing_pickle_data(mocked_pickle, mocked_redis):
 
     Parameters
     ----------
-    mocked_redis : magic mock
-        The mock of our Redis module.
-
     mocked_pickle: magic mock
         The mock of the Pickle library.
+
+    mocked_redis : magic mock
+        The mock of our Redis module.
 
     """
     # given
@@ -246,3 +246,33 @@ def test_get_battle_serializing_pickle_data(mocked_pickle, mocked_redis):
     assert result != raw_data
     assert mocked_pickle.loads.call_count == 1
     mocked_pickle.loads.assert_called_with(raw_data)
+
+
+@patch('dino_extinction.blueprints.battles.models.redis')
+def test_update_battle(mocked_redis):
+    """Update a battle data.
+
+    This test will try to update a battle with a new data and it will pass
+    if it sends the data pickled to Redis.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_redis : magic mock
+        The mock of our Redis module.
+
+    """
+    # given
+    fake = Faker()
+    battle_id = fake.word()
+    new_clean_data = fake.word()
+    new_raw_data = pickle.dumps(new_clean_data)
+
+    # when
+    model = models.BattleSchema()
+    model.update_battle(battle_id, new_clean_data)
+
+    # then
+    assert mocked_redis.set.call_count == 1
+    mocked_redis.set.assert_called_with(battle_id, new_raw_data)

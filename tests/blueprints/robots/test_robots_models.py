@@ -5,6 +5,7 @@ blueprint models are working as we are expecting.
 
 """
 import pickle
+import random
 
 from faker import Faker
 from mock import patch
@@ -305,7 +306,7 @@ def test_raise_error_if_position_misses_x_or_y(mocked_redis):
 
 @patch('dino_extinction.blueprints.robots.models.redis')
 def test_raise_if_direction_is_not_allowed(mocked_redis):
-    """Refuse not allowed directions
+    """Refuse not allowed directions.
 
     This test will try to create a new robot using a not allowed direction.
     Allowed directions are: north, south, west and east
@@ -346,3 +347,71 @@ def test_raise_if_direction_is_not_allowed(mocked_redis):
     # then
     assert result.errors['direction'][0] == 'The direction must be north, south, west or east'
     mocked_redis.instance.set.assert_not_called()
+
+
+def test_change_the_direction_of_a_robot():
+    """Change the direction of a robot.
+
+    This test will try to change the direction of a robot, in a random
+    scenario, and it will pass if it works properly. The idea is to turn
+    counterclockwise in cardinal points if it wants to turn-left and clockwise
+    if it wants to turn right.
+
+    """
+    # given
+    fake = Faker()
+
+    left_previous_directions = ['north', 'east', 'south', 'west']
+    left_new_directions = ['west', 'north', 'east', 'south']
+    left_picked_direction = random.choice(left_previous_directions)
+    left_choosed_index = left_previous_directions.index(left_picked_direction)
+    left_expected_answer = left_new_directions[left_choosed_index]
+
+    right_previous_directions = ['north', 'east', 'south', 'west']
+    right_new_directions = ['east', 'south', 'west', 'north']
+    right_picked_direction = random.choice(right_previous_directions)
+    right_choosed_index = right_previous_directions.index(right_picked_direction)
+    right_expected_answer = right_new_directions[right_choosed_index]
+
+    # when
+    model = models.RobotSchema()
+
+    left_result = model.change_direction(left_picked_direction, 'turn-left')
+    right_result = model.change_direction(right_picked_direction, 'turn-right')
+
+    # then
+    assert left_result == left_expected_answer
+    assert right_result == right_expected_answer
+
+
+def test_change_the_direction_of_a_robot_last_cardinal():
+    """Change the direction of a robot on the last cardinal point.
+
+    This test will try to change the direction of a robot and check if it
+    works, but it will always test the last cardinal point.
+
+    """
+    # given
+    fake = Faker()
+
+    left_previous_directions = ['north', 'east', 'south', 'west']
+    left_new_directions = ['west', 'north', 'east', 'south']
+    left_picked_direction = 'east'
+    left_choosed_index = left_previous_directions.index(left_picked_direction)
+    left_expected_answer = left_new_directions[left_choosed_index]
+
+    right_previous_directions = ['north', 'east', 'south', 'west']
+    right_new_directions = ['east', 'south', 'west', 'north']
+    right_picked_direction = 'west'
+    right_choosed_index = right_previous_directions.index(right_picked_direction)
+    right_expected_answer = right_new_directions[right_choosed_index]
+
+    # when
+    model = models.RobotSchema()
+
+    left_result = model.change_direction(left_picked_direction, 'turn-left')
+    right_result = model.change_direction(right_picked_direction, 'turn-right')
+
+    # then
+    assert left_result == left_expected_answer
+    assert right_result == right_expected_answer

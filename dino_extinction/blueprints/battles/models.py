@@ -104,3 +104,25 @@ class BattleSchema(Schema):
         data = pickle.loads(raw_data)
 
         return data
+
+    def update_battle(self, battle_id, new_data):
+        """Update the data of an existing battle.
+
+        This method will use the new data to update and overwrite an existing
+        battle data.
+
+        ...
+
+        Parameters
+        ----------
+        battle_id : str
+            The ID of the battle that you are trying to update.
+
+        new_data : dict
+            The entire battle new data that will overwrite the previous data.
+
+        """
+        raw_data = pickle.dumps(new_data)
+        redis.set(battle_id, raw_data)
+
+        return True

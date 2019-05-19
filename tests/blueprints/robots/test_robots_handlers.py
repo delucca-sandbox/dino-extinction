@@ -4,6 +4,8 @@ This test file will ensure that the most important logic of our Robots
 blueprint handlers are working as we are expecting.
 
 """
+import random
+
 from mock import (patch, MagicMock)
 from faker import Faker
 from dino_extinction.blueprints.robots import handlers
@@ -115,6 +117,7 @@ def test_robot_does_not_exists(mocked_battle_schema):
     mocked_battle_models : magic mock
         The mock of the models from our battles service.
 
+import random
     """
     # given
     fake = Faker()
@@ -133,7 +136,70 @@ def test_robot_does_not_exists(mocked_battle_schema):
     assert errors
 
 
-# For turn actions, it should update the battle state and return
+@patch('dino_extinction.blueprints.robots.handlers.RobotSchema')
+@patch('dino_extinction.blueprints.robots.handlers.BattleSchema')
+def test_robot_update_direction(mocked_battle_schema, mocked_robot_schema):
+    """Updated the direction of an existing robot.
+
+    This test will ensure that if we ask to update the direction of an existing
+    robot it will do so and not return any errors.
+
+    ...
+
+    Parameters
+    ----------
+    mocked_battle_models : magic mock
+        The mock of the models from our battles service.
+
+    mocked_robot_schema : magic mock
+        The mock of the models from our robots service.
+
+    """
+    # given
+    fake = Faker()
+    battle_id = fake.word()
+    robot_id = fake.word()
+    new_direction = fake.word()
+    options = ['turn-left', 'turn-right']
+    action = random.choice(options)
+
+    robot = dict()
+    robot.setdefault('direction', 'north')
+
+    entities = dict()
+    entities.setdefault(robot_id, robot)
+
+    battle = dict()
+    battle.setdefault('entities', entities)
+
+    mocked_battle_models = MagicMock()
+    mocked_battle_models.get_battle.return_value = battle
+    mocked_battle_schema.return_value = mocked_battle_models
+
+    mocked_robot_models = MagicMock()
+    mocked_robot_models.change_direction.return_value = new_direction
+    mocked_robot_schema.return_value = mocked_robot_models
+
+    # when
+    errors, result = handlers.command_robot(battle_id, robot_id, action)
+
+    # then
+    expected_robot = dict()
+    expected_robot.setdefault('direction', new_direction)
+
+    expected_entities = dict()
+    expected_entities.setdefault(robot_id, expected_robot)
+
+    expected_battle = dict()
+    expected_battle.setdefault('entities', expected_entities)
+
+    mocked_robot_models.change_direction.assert_called_once_with(
+        robot.get('direction'),
+        action)
+    mocked_battle_models.update_battle.assert_called_once_with(battle_id,
+                                                               expected_battle)
+    assert not errors
+    assert result
 
 # For move actions, it should check if the action is valid and move if so
 

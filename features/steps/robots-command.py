@@ -174,7 +174,7 @@ def step_check_if_robot_moved(context):
 
         cardinal_choosen = ordered_cardinal_points.get(action)
         prev_index = cardinal_choosen.index(prev) + 1
-        next_index = cardinal_choosen.index(next_index) + 1
+        next_index = cardinal_choosen.index(next) + 1
 
         return next_index - prev_index == 1 or 3
 
@@ -207,7 +207,7 @@ def step_check_if_robot_moved(context):
         previous_battle_state = pickle.loads(raw_previous_battle_state)
         previous_state = previous_battle_state['entities'].get(robot_id)
 
-        raw_current_battle_state = redis.get(battle_id)
+        raw_current_battle_state = redis.instance.get(battle_id)
         current_battle_state = pickle.loads(raw_current_battle_state)
         current_state = current_battle_state['entities'].get(robot_id)
 

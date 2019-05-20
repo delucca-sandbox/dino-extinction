@@ -282,8 +282,8 @@ def test_update_battle(mocked_redis):
     model.update_battle(battle_id, new_clean_data)
 
     # then
-    assert mocked_redis.set.call_count == 1
-    mocked_redis.set.assert_called_with(battle_id, new_raw_data)
+    assert mocked_redis.instance.set.call_count == 1
+    mocked_redis.instance.set.assert_called_with(battle_id, new_raw_data)
 
 
 def test_robot_move():
@@ -314,10 +314,13 @@ def test_robot_move():
     entities = dict()
     entities.setdefault(robot_id, robot)
 
+    board = dict()
+    board.setdefault('size', default_size)
+    board.setdefault('state', board_with_robot)
+
     battle = dict()
     battle.setdefault('entities', entities)
-    battle.setdefault('size', default_size)
-    battle.setdefault('state', board_with_robot)
+    battle.setdefault('board', board)
 
     # when
     model = models.BattleSchema()
@@ -330,13 +333,13 @@ def test_robot_move():
     board_with_moved_robot[new_robot_position[0]][new_robot_position[1]] = \
         robot_id
 
-    moved_state = dict()
-    moved_state.setdefault('state', board_with_moved_robot)
+    moved_board = dict()
+    moved_board.setdefault('state', board_with_moved_robot)
 
     moved_robot = dict()
     moved_robot.setdefault('position', new_robot_position)
 
-    moved_battle.update(moved_state)
+    moved_battle.get('board').update(moved_board)
     moved_battle.get('entities').get(robot_id).update(moved_robot)
 
     assert result == moved_battle
@@ -368,10 +371,13 @@ def test_robot_move_in_a_taken_spot():
     entities = dict()
     entities.setdefault(robot_id, robot)
 
+    board = dict()
+    board.setdefault('size', default_size)
+    board.setdefault('state', board_with_robot)
+
     battle = dict()
     battle.setdefault('entities', entities)
-    battle.setdefault('size', default_size)
-    battle.setdefault('state', board_with_robot)
+    battle.setdefault('board', board)
 
     # when
     model = models.BattleSchema()
@@ -409,10 +415,13 @@ def test_robot_attack():
     entities.setdefault('D-1111', default_dino)
     entities.setdefault('D-2222', default_dino)
 
+    board = dict()
+    board.setdefault('size', default_size)
+    board.setdefault('state', board_with_robot_and_dinos)
+
     battle = dict()
     battle.setdefault('entities', entities)
-    battle.setdefault('size', default_size)
-    battle.setdefault('state', board_with_robot_and_dinos)
+    battle.setdefault('board', board)
 
     # when
     model = models.BattleSchema()
@@ -425,10 +434,13 @@ def test_robot_attack():
     attacked_entities = dict()
     attacked_entities.setdefault(robot_id, robot)
 
+    attacked_board = dict()
+    attacked_board.setdefault('size', default_size)
+    attacked_board.setdefault('state', board_with_robot)
+
     attacked_battle = dict()
     attacked_battle.setdefault('entities', attacked_entities)
-    attacked_battle.setdefault('size', default_size)
-    attacked_battle.setdefault('state', board_with_robot)
+    attacked_battle.setdefault('board', attacked_board)
 
     assert result == attacked_battle
     assert 'D-1111' not in result.get('entities')
@@ -461,10 +473,13 @@ def test_avoid_friendly_fire():
     entities.setdefault(robot_id, robot)
     entities.setdefault('R-1111', default_robot)
 
+    board = dict()
+    board.setdefault('size', default_size)
+    board.setdefault('state', board_with_robot_and_dinos)
+
     battle = dict()
     battle.setdefault('entities', entities)
-    battle.setdefault('size', default_size)
-    battle.setdefault('state', board_with_robot_and_dinos)
+    battle.setdefault('board', board)
 
     # when
     model = models.BattleSchema()

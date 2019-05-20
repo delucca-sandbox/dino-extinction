@@ -11,11 +11,11 @@ Feature: command an existing robot
        And the robot moved
 
   Examples: Scenarios
-    | command        | message     |
-    | turn-left      | Robot moved |
-    | turn-right     | Robot moved |
-    | move-forward   | Robot moved |
-    | move-backwards | Robot moved |
+    | command        | message         |
+    | turn-left      | Robot commanded |
+    | turn-right     | Robot commanded |
+    | move-forward   | Robot commanded |
+    | move-backwards | Robot commanded |
 
   Scenario Outline: be able to attack
      Given a fake data provider

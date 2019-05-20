@@ -191,7 +191,6 @@ class RobotSchema(Schema):
 
         return new_direction
 
-
     def _create_robot_id(self):
         r = randint(0000, 9999)
         return 'R-{0:04d}'.format(r)

@@ -129,7 +129,7 @@ class BattleSchema(Schema):
 
         """
         raw_data = pickle.dumps(new_data)
-        redis.set(battle_id, raw_data)
+        redis.instance.set(battle_id, raw_data)
 
         return True
 
@@ -188,11 +188,11 @@ class BattleSchema(Schema):
         new_yPos = new_robot_position[0]
         new_xPos = new_robot_position[1]
 
-        if battle.get('state')[new_yPos][new_xPos]:
+        if battle.get('board').get('state')[new_yPos][new_xPos]:
             return False
 
-        updated_battle.get('state')[old_yPos][old_xPos] = None
-        updated_battle.get('state')[new_yPos][new_xPos] = robot_id
+        updated_battle.get('board').get('state')[old_yPos][old_xPos] = None
+        updated_battle.get('board').get('state')[new_yPos][new_xPos] = robot_id
 
         new_position = dict()
         new_position.setdefault('position', new_robot_position)
@@ -234,11 +234,11 @@ class BattleSchema(Schema):
                                                same_hor_axis))
 
         for yPos, xPos in positions_to_attack:
-            entity = battle.get('state')[yPos][xPos]
+            entity = battle.get('board').get('state')[yPos][xPos]
 
             if entity and entity[:2] == 'D-':
                 del entities[entity]
-                battle.get('state')[yPos][xPos] = None
+                battle.get('board').get('state')[yPos][xPos] = None
 
         return battle
 

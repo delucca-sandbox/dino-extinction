@@ -16,3 +16,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Developed the create new battle route and service
 - Developed the create new dinossaur route and service
 - Developed the create new robot route and service
+- DEveloped the cmmand a robot route and service

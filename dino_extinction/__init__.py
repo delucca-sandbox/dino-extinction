@@ -8,7 +8,6 @@ entire application.
 import yaml
 
 from flask import Flask
-from flask_script import Manager
 from dino_extinction.infrastructure import redis
 
 
@@ -62,7 +61,3 @@ def create_app(env='DEVELOPMENT'):
         app.register_blueprint(robots.bp, url_prefix='/robots')
 
         return app
-
-
-manager = Manager(create_app)
-manager.add_option('-e', '--env', dest='env', required=False)

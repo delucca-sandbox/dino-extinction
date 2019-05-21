@@ -8,7 +8,7 @@ Prefix: /battles
 """
 import json
 
-from flask import (Response, request)
+from flask import (Response, request, render_template)
 
 
 def set_routes(bp, handlers):
@@ -39,3 +39,7 @@ def set_routes(bp, handlers):
         return Response(parsed,
                         status=status,
                         mimetype=mimetype)
+
+    @bp.route('/state', methods=['GET'])
+    def route_status():
+        return render_template('state.html')

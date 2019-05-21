@@ -118,6 +118,8 @@ def command_robot(battle_id, robot_id, action):
                                                    robot_id,
                                                    action)
 
+        if not new_battle_state:
+            return _default_error('There is another entity there')
         battle_model.update_battle(battle_id, new_battle_state)
 
     if action == 'attack':

@@ -4,6 +4,8 @@ This test file will ensure that the most important logic of our Robots
 blueprint routes are working as we are expecting.
 
 """
+import json
+
 from mock import (patch, MagicMock)
 from faker import Faker
 from dino_extinction.blueprints.robots import routes
@@ -51,6 +53,6 @@ def test_invalid_robot_id(mocked_request, mocked_response):
 
     # then
     mocked_handlers.command_robot.assert_not_called()
-    mocked_response.assert_called_once_with(False,
+    mocked_response.assert_called_once_with(json.dumps(False),
                                             status=500,
                                             mimetype='application/json')

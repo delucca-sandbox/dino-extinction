@@ -39,12 +39,8 @@ Feature: command an existing robot
           | 1111     |       | turn-left |
           | 1111     | 1     |           |
           | 1111     | 1     | morty     |
-        And an existing battle
-        And an existing robot
-        And a snapshot of all battles
        When we command the robot
        Then we receive an error
-        And the battle state is the same
 
  Scenario Outline: should not move the robot if the place was taken
     Given a fake data provider

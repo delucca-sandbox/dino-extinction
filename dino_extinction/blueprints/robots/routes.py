@@ -59,7 +59,7 @@ def set_routes(bp, handlers):
 
         robot_pattern = 'R-'
         if robot_id[:2] != robot_pattern:
-            return Response(False,
+            return Response(json.dumps(False),
                             status=status.get('error'),
                             mimetype=mimetype)
 

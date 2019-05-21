@@ -149,7 +149,7 @@ def step_check_if_robot_was_created(context):
 
         xPos = int(request['xPosition'])
         yPos = int(request['yPosition'])
-        robot_id = board[xPos - 1][yPos - 1]
+        robot_id = board[yPos - 1][xPos - 1]
 
         assert robot_id in entities
         assert entities[robot_id]['position'] == [yPos, xPos]

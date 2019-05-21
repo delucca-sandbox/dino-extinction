@@ -183,7 +183,8 @@ def step_check_if_nothing_happened(context):
     """
     for request in context.requests:
         battle_id = request['battleId']
-        assert battle_id
+        if not battle_id:
+            continue
 
         snapshot = pickle.loads(context.snapshots[battle_id])
 

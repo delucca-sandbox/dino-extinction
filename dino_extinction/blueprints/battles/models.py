@@ -187,12 +187,16 @@ class BattleSchema(Schema):
         old_xPos = original_position[1]
         new_yPos = new_robot_position[0]
         new_xPos = new_robot_position[1]
+        board = battle.get('board').get('state')
 
-        if battle.get('board').get('state')[new_yPos][new_xPos]:
+        if self._is_not_valid_index(new_xPos - 1, new_yPos - 1, board):
             return False
 
-        updated_battle.get('board').get('state')[old_yPos][old_xPos] = None
-        updated_battle.get('board').get('state')[new_yPos][new_xPos] = robot_id
+        if board[new_yPos - 1][new_xPos - 1]:
+            return False
+
+        updated_battle.get('board').get('state')[old_yPos - 1][old_xPos - 1] = None
+        updated_battle.get('board').get('state')[new_yPos - 1][new_xPos - 1] = robot_id
 
         new_position = dict()
         new_position.setdefault('position', new_robot_position)
@@ -201,7 +205,7 @@ class BattleSchema(Schema):
         return updated_battle
 
     def robot_attack(self, battle, robot_id):
-        """Attack all dinos close to an specific robot
+        """Attack all dinos close to an specific robot.
 
         This method will destroy all dinos close to an specific robot. It will
         not attack any other robot close to it.
@@ -234,11 +238,11 @@ class BattleSchema(Schema):
                                                same_hor_axis))
 
         for yPos, xPos in positions_to_attack:
-            entity = battle.get('board').get('state')[yPos][xPos]
+            entity = battle.get('board').get('state')[yPos - 1][xPos - 1]
 
             if entity and entity[:2] == 'D-':
                 del entities[entity]
-                battle.get('board').get('state')[yPos][xPos] = None
+                battle.get('board').get('state')[yPos - 1][xPos - 1] = None
 
         return battle
 
@@ -254,3 +258,6 @@ class BattleSchema(Schema):
         dispatch.setdefault('move-backwards', move_backwards)
 
         return dispatch.get(act)(pos, rev)
+
+    def _is_not_valid_index(self, x, y, board):
+        return x not in range(len(board[0])) or y not in range(len(board))

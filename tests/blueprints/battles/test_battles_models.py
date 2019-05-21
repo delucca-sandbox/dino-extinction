@@ -309,7 +309,7 @@ def test_robot_move():
     robot.setdefault('direction', 'north')
     robot.setdefault('position', (3, 3))
     board_with_robot = deepcopy(default_board)
-    board_with_robot[3][3] = robot_id
+    board_with_robot[2][2] = robot_id
 
     entities = dict()
     entities.setdefault(robot_id, robot)
@@ -330,7 +330,7 @@ def test_robot_move():
     moved_battle = deepcopy(battle)
     new_robot_position = _find_new_robot_spot(action)
     board_with_moved_robot = deepcopy(default_board)
-    board_with_moved_robot[new_robot_position[0]][new_robot_position[1]] = \
+    board_with_moved_robot[new_robot_position[0] - 1][new_robot_position[1] - 1] = \
         robot_id
 
     moved_board = dict()
@@ -365,8 +365,8 @@ def test_robot_move_in_a_taken_spot():
     robot.setdefault('direction', 'north')
     robot.setdefault('position', (3, 3))
     board_with_robot = deepcopy(default_board)
-    board_with_robot[3][3] = robot_id
-    board_with_robot[4 if action == 'move-forward' else 2][3] = fake.word()
+    board_with_robot[2][2] = robot_id
+    board_with_robot[3 if action == 'move-forward' else 1][2] = fake.word()
 
     entities = dict()
     entities.setdefault(robot_id, robot)
@@ -406,9 +406,9 @@ def test_robot_attack():
     robot.setdefault('direction', 'north')
     robot.setdefault('position', (3, 3))
     board_with_robot_and_dinos = deepcopy(default_board)
-    board_with_robot_and_dinos[3][3] = robot_id
-    board_with_robot_and_dinos[4][3] = 'D-1111'
-    board_with_robot_and_dinos[4][4] = 'D-2222'
+    board_with_robot_and_dinos[2][2] = robot_id
+    board_with_robot_and_dinos[3][2] = 'D-1111'
+    board_with_robot_and_dinos[3][3] = 'D-2222'
 
     entities = dict()
     entities.setdefault(robot_id, robot)
@@ -429,7 +429,7 @@ def test_robot_attack():
 
     # then
     board_with_robot = deepcopy(default_board)
-    board_with_robot[3][3] = robot_id
+    board_with_robot[2][2] = robot_id
 
     attacked_entities = dict()
     attacked_entities.setdefault(robot_id, robot)
@@ -466,8 +466,8 @@ def test_avoid_friendly_fire():
     robot.setdefault('direction', 'north')
     robot.setdefault('position', (3, 3))
     board_with_robot_and_dinos = deepcopy(default_board)
-    board_with_robot_and_dinos[3][3] = robot_id
-    board_with_robot_and_dinos[4][3] = 'R-1111'
+    board_with_robot_and_dinos[2][2] = robot_id
+    board_with_robot_and_dinos[3][2] = 'R-1111'
 
     entities = dict()
     entities.setdefault(robot_id, robot)

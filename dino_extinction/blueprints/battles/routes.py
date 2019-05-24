@@ -9,6 +9,7 @@ Prefix: /battles
 import json
 
 from flask import (Response, request, render_template)
+from dino_extinction.blueprints.battles.models import BattleSchema
 
 
 def set_routes(bp, handlers):
@@ -41,5 +42,19 @@ def set_routes(bp, handlers):
                         mimetype=mimetype)
 
     @bp.route('/state', methods=['GET'])
-    def route_status():
-        return render_template('state.html')
+    def route_state():
+        battle_id = request.args.get('battleId')
+        if not battle_id:
+            return _not_found()
+
+        battle_model = BattleSchema()
+        page_title = 'Battle Status'
+        battle = battle_model.get_battle(battle_id=battle_id)
+        if not battle:
+            return _not_found()
+
+        return render_template('state.html',
+                               title=page_title)
+
+    def _not_found():
+        return Response('', status=404)

@@ -72,7 +72,6 @@ class BattleSchema(Schema):
         board_size = data['board_size']
         board_state = [[None] * board_size for _ in range(board_size)]
 
-
         board = dict()
         board['size'] = board_size
         board['state'] = board_state
@@ -81,7 +80,6 @@ class BattleSchema(Schema):
         battle['board'] = board
         pickled_battle = pickle.dumps(battle)
         redis.instance.set(data['id'], pickled_battle)
-
 
     def get_battle(self, battle_id):
         """Get the data from an existing battle.

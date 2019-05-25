@@ -8,7 +8,7 @@ Prefix: /battles
 """
 import json
 
-from flask import (Response, request, render_template)
+from flask import (Response, request, render_template, abort, current_app)
 from dino_extinction.blueprints.battles.models import BattleSchema
 
 
@@ -45,16 +45,17 @@ def set_routes(bp, handlers):
     def route_state():
         battle_id = request.args.get('battleId')
         if not battle_id:
-            return _not_found()
+            abort(404)
 
         battle_model = BattleSchema()
-        page_title = 'Battle Status'
         battle = battle_model.get_battle(battle_id=battle_id)
         if not battle:
-            return _not_found()
+            abort(404)
 
+        default_title = current_app.config.get('BATTLE_STATUS_TITLE_DEFAULT')
+        page_title = default_title.format(battle_id)
+        board = battle.get('board').get('state')
         return render_template('state.html',
-                               title=page_title)
-
-    def _not_found():
-        return Response('', status=404)
+                               title=page_title,
+                               battle_id=battle_id,
+                               board=board)

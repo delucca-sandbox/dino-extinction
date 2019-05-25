@@ -1,6 +1,7 @@
 <!doctype html>
-<title>Robots vs Dinossaurs | {% block title %}{% endblock %}</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<title>Robots vs Dinossaurs | {{ title }}</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/style.css') }}">
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700&display=swap" rel="stylesheet">
 <section class="content">
   {% block content %}{% endblock %}
 </section>

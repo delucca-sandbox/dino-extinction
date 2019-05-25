@@ -1,5 +1,28 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  teste
+  <article class="wrapper">
+    <h1>Batalha #{{ battle_id }}</h1>
+
+    <div class="board">
+      {% for row in board %}
+        <div class="row">
+            <span class="index rowIndex">
+              {{ loop.index }}
+            </span>
+          {% set outer_loop = loop %}
+          {% for col in row %}
+            <div class="col">
+              {% if outer_loop.index == 1 %}
+                <span class="index colIndex">
+                  {{ loop.index }}
+                </span>
+              {% endif %}
+              .
+            </div>
+          {% endfor %}
+        </div>
+      {% endfor %}
+    </div>
+  </article>
 {% endblock %}

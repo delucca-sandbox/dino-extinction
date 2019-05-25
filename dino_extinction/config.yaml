@@ -1,5 +1,8 @@
 SHARED: &shared
   DEBUG: False
+  NOT_FOUND_TITLE_DEFAULT: 'Página não encontrada'
+  BATTLE_STATUS_TITLE_DEFAULT: 'Status da Batalha #{}'
+
 
 DEVELOPMENT: &development
   <<: *shared

@@ -7,7 +7,7 @@ entire application.
 """
 import yaml
 
-from flask import Flask
+from flask import (Flask, render_template)
 from dino_extinction.infrastructure import redis
 
 
@@ -59,5 +59,10 @@ def create_app(env='DEVELOPMENT'):
         app.register_blueprint(battles.bp, url_prefix='/battles')
         app.register_blueprint(dinossaurs.bp, url_prefix='/dinossaurs')
         app.register_blueprint(robots.bp, url_prefix='/robots')
+
+        @app.errorhandler(404)
+        def page_not_found(error):
+            title = app.config.get('NOT_FOUND_TITLE_DEFAULT')
+            return render_template('notfound.html', title=title)
 
         return app

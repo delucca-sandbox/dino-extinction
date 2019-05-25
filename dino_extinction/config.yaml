@@ -3,12 +3,19 @@ SHARED: &shared
   NOT_FOUND_TITLE_DEFAULT: 'Página não encontrada'
   BATTLE_STATUS_TITLE_DEFAULT: 'Status da Batalha #{}'
 
+PRODUCTION: &production
+  <<: *shared
+  PORT_DEFAULT: 80
+  DEBUG: False
+  REDIS_URL: 'redis://redis:6379/0'
 
 DEVELOPMENT: &development
   <<: *shared
+  PORT_DEFAULT: 3000
   DEBUG: True
   REDIS_URL: 'redis://localhost:6379/0'
 
 TESTING:
   <<: *shared
+  PORT_DEFAULT: 3000
   REDIS_URL: 'redis://morty'

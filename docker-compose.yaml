@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  dino_extinction:
+    build: .
+    environment:
+      - FLASK_ENV=PRODUCTION
+      - FLASK_APP=dino_extinction
+    links:
+      - redis:redis
+    ports:
+      - 80:80
+
+  redis:
+    image: redis:alpine

@@ -11,12 +11,14 @@ The service is organized in the following structure:
 ```
 Dino-Extinction-v1.0.0
 │
-├── dino-extinction
+├── dino_extinction
 │ ├── blueprints
 │ ├── └── <blueprint>
 | ├── infrastructure
+| ├── temlpates
 | ├── static
 │ └── __init__.py
+│ └── config.yaml
 ├── features
 ├── tests
 ├── CHANGELOG.md
@@ -28,15 +30,34 @@ Dino-Extinction-v1.0.0
 ```
 
 ## 🤖 Installation Instructions
-🚧 🚧 🚧
+
+To run this app you must have Docker and Docker Compose installed on your machine. You can follow [this guideline](https://docs.docker.com/install/) to install **Docker** and [this one](https://docs.docker.com/compose/install/) to install **Docker Compose**.
+
+With both installed, simply go to the root of this project and them run:
+```
+$ docker-compose build
+$ docker-compose up
+```
+
+When you see a dinossaur art and a running message you can start using this application. The serve will be listening on: `http://localhost/`
 
 ## ☕ Usage
-🚧 🚧 🚧
 
-To see all endpoint that this server has, pleace checkout our [commands reference](COMMANDS.md)
+To understand how to use this app and see all endpoint that this server has, checkout our [commands reference](COMMANDS.md)
 
 ## 🐞 Testing
-🚧 🚧 🚧
+
+I'm using **Pytest** and **Behave** to run all tests. To runn all behaviour/acceptance tests simply run:
+
+```
+$ behave
+```
+
+And, for the units tests, run:
+
+```
+pytest
+```
 
 ## 💅 Versioning
 

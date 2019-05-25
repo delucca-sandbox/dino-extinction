@@ -17,3 +17,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Developed the create new dinossaur route and service
 - Developed the create new robot route and service
 - Developed the command robot route and service
+- Developed the status route
+- Added some important chores to the project
+- Created the basic Docker of the project

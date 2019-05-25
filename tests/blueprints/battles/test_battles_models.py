@@ -295,7 +295,7 @@ def test_robot_move():
 
     """
     def _find_new_robot_spot(action):
-        return (4, 3) if action == 'move-forward' else (2, 3)
+        return (2, 3) if action == 'move-forward' else (4, 3)
 
     # given
     fake = Faker()
@@ -366,7 +366,7 @@ def test_robot_move_in_a_taken_spot():
     robot.setdefault('position', (3, 3))
     board_with_robot = deepcopy(default_board)
     board_with_robot[2][2] = robot_id
-    board_with_robot[3 if action == 'move-forward' else 1][2] = fake.word()
+    board_with_robot[1 if action == 'move-forward' else 3][2] = fake.word()
 
     entities = dict()
     entities.setdefault(robot_id, robot)

@@ -55,7 +55,9 @@ def set_routes(bp, handlers):
         default_title = current_app.config.get('BATTLE_STATUS_TITLE_DEFAULT')
         page_title = default_title.format(battle_id)
         board = battle.get('board').get('state')
+        entities = battle.get('entities')
         return render_template('state.html',
                                title=page_title,
                                battle_id=battle_id,
-                               board=board)
+                               board=board,
+                               entities=entities)

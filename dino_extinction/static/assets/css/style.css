@@ -59,17 +59,26 @@ h1 {
 	line-height: 4rem;
 }
 
+strong {
+	font-weight: 700;
+}
+
 .content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .wrapper {
 	width: 950px;
 	text-align: center;
+	height: auto;
+}
+
+.board {
+	margin-bottom: 55px;
 }
 
 .notFoundRobot {
@@ -112,17 +121,87 @@ h1 {
 }
 
 .index {
-	font-size: .5rem;
+	font-size: .4rem;
 	font-color: #606060;
 	position: absolute;
 	margin: 0;
+	padding: 0;
+	height: calc(950px/50);
+	width: calc(950px/50);
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .index.rowIndex {
-	margin-left: -5px;
-	margin-top: 7px;
+	margin-left: calc(-950px/50);
 }
 
 .index.colIndex {
+	margin-top: calc(-950px/50);
+}
+
+.battle h1 {
+	font-size: 2rem;
+}
+
+.battle p {
+	font-size: .7rem;
+}
+
+.battle .top {
+	margin: 55px auto;
+}
+
+.withEntity {
+	vertical-align: middle;
+	text-align: center;
+}
+
+.withEntity img {
+	width: 60%;
+	-webkit-filter: invert(100%);
+	filter: invert(100%);
+}
+
+.robot {
+	background-color: #348bad;
+}
+
+.dino {
+	background-color: #aa3869;
+}
+
+.arrow {
+	width: 0;
+	height: 0;
+	border-style: solid;
+	position: absolute;
+	z-index: 9;
+}
+
+.arrow.north {
+	border-width: 0 5px 8.7px 5px;
+	border-color: transparent transparent #e1ff00 transparent;
 	margin-top: -5px;
+}
+
+.arrow.south {
+	border-width: 8.7px 5px 0 5px;
+	border-color: #e1ff00 transparent transparent transparent;
+	margin-top: 15px;
+}
+
+.arrow.west {
+	border-width: 5px 8.7px 5px 0;
+	border-color: transparent #e1ff00 transparent transparent;
+	margin-left: -10px;
+	margin-top: 2px;
+}
+
+.arrow.east {
+	border-width: 5px 0 5px 8.7px;
+	border-color: transparent transparent transparent #e1ff00;
+	margin-left: 12px;
+	margin-top: 2px;
 }

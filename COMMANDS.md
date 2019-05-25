@@ -37,7 +37,6 @@ Adds a new robot into a specific battle in a certain position and facing a certa
 
 **Parameters:**
 * **battleId**: The id of your current battle `REQUIRED`
-* **name**: The name of your robot `REQUIRED`
 * **xPosition**: The position of your robot in the x-axis (it should be less than 50) `REQUIRED`
 * **yPosition**: The position of your robot in the y-axis (it should be less than 50) `REQUIRED`
 * **direction**: What direction your robot is facing. It can be: **north**, **east**, **south** or **west** `REQUIRED`

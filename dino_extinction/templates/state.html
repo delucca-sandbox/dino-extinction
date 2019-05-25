@@ -1,8 +1,11 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  <article class="wrapper">
-    <h1>Batalha #{{ battle_id }}</h1>
+  <article class="wrapper battle">
+    <div class="top">
+      <h1>Batalha #{{ battle_id }}</h1>
+      <p><strong>PARA VER O ID DOS ROBÔS, PASSE O MOUSE SOBRE ELES</strong></p>
+    </div>
 
     <div class="board">
       {% for row in board %}
@@ -12,13 +15,24 @@
             </span>
           {% set outer_loop = loop %}
           {% for col in row %}
-            <div class="col">
+            <div class="col{% if col %} withEntity{% endif %}">
               {% if outer_loop.index == 1 %}
                 <span class="index colIndex">
                   {{ loop.index }}
                 </span>
               {% endif %}
-              .
+              {% if col and col[:1] == 'R' %}
+                <figure class="robot">
+                  <span class="arrow {{ entities[col].direction }}"></span>
+                  <img src="{{ url_for('static', filename='assets/images/robot-icon.png') }}" title="{{ col }}" />
+                </figure>
+              {% elif col and col[:1] == 'D' %}
+                <figure class="dino">
+                  <img src="{{ url_for('static', filename='assets/images/dino-icon.png') }}" />
+                </figure>
+              {% else %}
+                &nbsp;
+              {% endif %}
             </div>
           {% endfor %}
         </div>

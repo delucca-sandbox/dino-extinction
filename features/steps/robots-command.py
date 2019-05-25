@@ -322,10 +322,10 @@ def step_check_if_robot_moved(context):
         next_position = next.get('position')[next_cardinal_order]
 
         is_reversed = dict()
-        is_reversed.setdefault('north', False)
-        is_reversed.setdefault('east', False)
-        is_reversed.setdefault('south', True)
+        is_reversed.setdefault('north', True)
         is_reversed.setdefault('west', True)
+        is_reversed.setdefault('south', False)
+        is_reversed.setdefault('west', False)
 
         traveled_forward = _calculate_distance(prev_position,
                                                next_position,

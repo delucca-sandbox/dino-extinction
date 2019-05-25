@@ -85,8 +85,8 @@ def step_insert_an_inconvenient_dinossaur(context):
     for request in context.requests:
         data = dict()
         data.setdefault('battle_id', request.get('battleId'))
-        data.setdefault('position', (request.get('xPosition'),
-                                     request.get('yPosition')))
+        data.setdefault('position', (request.get('yPosition'),
+                                     request.get('xPosition')))
 
         model.load(data)
 
@@ -147,7 +147,7 @@ def step_check_if_dinossaur_was_created(context):
 
         xPos = int(request['xPosition'])
         yPos = int(request['yPosition'])
-        dino_id = board[xPos - 1][yPos - 1]
+        dino_id = board[yPos - 1][xPos - 1]
 
         assert dino_id in entities
-        assert entities[dino_id]['position'] == [xPos, yPos]
+        assert entities[dino_id]['position'] == [yPos, xPos]

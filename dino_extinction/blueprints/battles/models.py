@@ -40,7 +40,7 @@ class BattleSchema(Schema):
 
         ...
 
-        Raises        print(original_position)
+        Raises
 
         ------
         ValidationError
@@ -160,10 +160,10 @@ class BattleSchema(Schema):
         cardinal_points.setdefault('east', 1)
 
         reversed_directions = dict()
-        reversed_directions.setdefault('north', False)
-        reversed_directions.setdefault('east', False)
-        reversed_directions.setdefault('south', True)
+        reversed_directions.setdefault('north', True)
         reversed_directions.setdefault('west', True)
+        reversed_directions.setdefault('south', False)
+        reversed_directions.setdefault('east', False)
 
         robot = battle.get('entities').get(robot_id)
         facing_direction = robot.get('direction')
@@ -228,9 +228,9 @@ class BattleSchema(Schema):
         yPositions = [robot_yPos + 1, robot_yPos - 1]
         xPositions = [robot_xPos + 1, robot_xPos - 1]
 
-        corners = [(x, y) for x in xPositions for y in yPositions]
-        same_ver_axis = [(x, y) for x in robot_position for y in yPositions]
-        same_hor_axis = [(x, y) for x in xPositions for y in robot_position]
+        corners = [(y, x) for x in xPositions for y in yPositions]
+        same_ver_axis = [(y, x) for x in robot_position for y in yPositions]
+        same_hor_axis = [(y, x) for x in xPositions for y in robot_position]
         positions_to_attack = list(set().union(corners,
                                                same_ver_axis,
                                                same_hor_axis))

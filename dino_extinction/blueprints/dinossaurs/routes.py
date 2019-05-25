@@ -31,8 +31,8 @@ def set_routes(bp, handlers):
     @bp.route('/new', methods=['POST'])
     def route_new():
         battle_id = request.values.get('battleId')
-        board_position = (request.values.get('xPosition'),
-                          request.values.get('yPosition'))
+        board_position = (request.values.get('yPosition'),
+                          request.values.get('xPosition'))
 
         errors, _ = handlers.new_dinossaur(battle_id=battle_id,
                                            board_position=board_position)

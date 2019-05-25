@@ -56,7 +56,7 @@ $ behave
 And, for the units tests, run:
 
 ```
-pytest
+$ pytest
 ```
 
 ## 💅 Versioning
